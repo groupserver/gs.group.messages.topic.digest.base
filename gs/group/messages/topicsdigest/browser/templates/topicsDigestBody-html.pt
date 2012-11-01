@@ -1,3 +1,4 @@
+<p tal:content="view/groupInfo/group_members_info/fullMembers">GroupInfo</p>
 <ul>
   <tal:block repeat="topic options/topics | view/topics | python:['']">
     <tal:block

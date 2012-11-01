@@ -45,11 +45,10 @@ class TopicsDigestNotifier(object):
 
     def notify(self):
         subject = self.subject
-        #TODO This is giving the template a list of topics, not of topic digests. The template will break as is.
         text = self.textTemplate(topics=self.topicsDigest.topics)
         html = self.htmlTemplate(topics=self.topicsDigest.topics)
-        #TODO Find the list of all users in the group
-        for user in ALLUSERS:
+        allusers = self.groupInfo.group_members_info.fullMembers
+        for user in allusers:
             ms = MessageSender(self.context, user)
             ms.send_message(subject, text, html)
 
