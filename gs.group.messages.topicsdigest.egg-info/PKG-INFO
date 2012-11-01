@@ -1,0 +1,28 @@
+Metadata-Version: 1.1
+Name: gs.group.messages.topicsdigest
+Version: 0.98-20121025185730-6ae54ccbc6d5
+Summary: Provider of topic digest email notifiers
+Home-page: http://www.groupserver.org/
+Author: Bill Bushey
+Author-email: wbushey@acm.org
+License: other
+Description: Introduction
+        ===========
+        
+        gs.group.messages.topicsdigest provides the notifiers used to construct topic digest emails.
+        
+        Changelog
+        =========
+        
+        0.98 - Unreleased
+        
+Keywords: groupserver email digest
+Platform: UNKNOWN
+Classifier: Development Status :: 1- Planning
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Zope2
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX :: LinuxProgramming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

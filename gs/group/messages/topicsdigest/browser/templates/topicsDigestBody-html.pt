@@ -1,0 +1,20 @@
+<ul>
+  <tal:block repeat="topicDigest options/topicsDigest | view/topicsDigest | python:['']">
+    <tal:block
+        define="subjectLine topicDigest/subjectLine | string:Subject Missing;
+                linkLine topicDigest/linkLine | string:Link Missing;">
+      <li tal:content="subjectLine">Topic Subject</li>
+      <ul>
+        <li><tal:block content="linkLine">URL to Topic</tal:block></li>
+        <li>
+          <tal:block condition="python:view.frequency == 'daily'">
+            <tal:block content="topicDigest/numPostsToday">#</tal:block> new posts, <tal:block content="topicDigest/numPostsTotal">#</tal:block> total - latest at <tal:block content="topicDigest/lastPostDate">date</tal:block> by <tal:block content="topicDigest/lastPostAuthor/name">author</tal:block>
+          </tal:block>
+          <tal:block condition="python:view.frequency == 'weekly'">
+            Latest post at <tal:block content="topicDigest/lastPostDate">date</tal:block> by <tal:block content="topicDigest/lastPostAuthor/name">author</tal:block>
+          </tal:block>
+        </li>
+      </ul>
+</tal:block>
+</tal:block>
+</ul>

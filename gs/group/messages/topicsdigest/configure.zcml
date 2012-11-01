@@ -3,5 +3,114 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five">
 
+  <!-- topicsDigestBody-html.pt and topicsDigestBody-txt.pt do all of the controlling
+       of the look of digest bodies.-->
+
+  <!-- Topic digest message pages, in HTML and plain-text  -->
+  <browser:page
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="gs-group-messages-topicsdigest-daily.html"
+    class=".notifiermessages.TopicsDigestMessage"
+    template="browser/templates/dailyTopicsDigest.pt"
+    permission="zope2.View"/>
+
+  <browser:page
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="gs-group-messages-topicsdigest-daily.txt"
+    class=".notifiermessages.TopicsDigestMessageText"
+    template="browser/templates/dailyTopicsDigest-txt.pt"
+    permission="zope2.View"/>
+
+  <browser:page
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="gs-group-messages-topicsdigest-weekly.html"
+    class=".notifiermessages.TopicsDigestMessage"
+    template="browser/templates/weeklyTopicsDigest.pt"
+    permission="zope2.View"/>
+
+  <browser:page
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    name="gs-group-messages-topicsdigest-weekly.txt"
+    class=".notifiermessages.TopicsDigestMessageText"
+    template="browser/templates/weeklyTopicsDigest-txt.pt"
+    permission="zope2.View"/>
+
+  <!-- ViewletManagers -->
+  <browser:viewletManager
+    name="groupserver.DailyTopicsDigestHtmlVM"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IDailyTopicsDigestHtmlVM"
+    class="gs.viewlet.manager.WeightOrderedViewletManager"
+    template="browser/templates/topicsDigestVM.pt"/>
+
+  <browser:viewletManager
+    name="groupserver.DailyTopicsDigestTxtVM"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IDailyTopicsDigestTxtVM"
+    class="gs.viewlet.manager.WeightOrderedViewletManager"
+    template="browser/templates/topicsDigestVM.pt"/>
+
+  <browser:viewletManager
+    name="groupserver.WeeklyTopicsDigestHtmlVM"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IWeeklyTopicsDigestHtmlVM"
+    class="gs.viewlet.manager.WeightOrderedViewletManager"
+    template="browser/templates/topicsDigestVM.pt"/>
+
+  <browser:viewletManager
+    name="groupserver.WeeklyTopicsDigestTxtVM"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IWeeklyTopicsDigestTxtVM"
+    class="gs.viewlet.manager.WeightOrderedViewletManager"
+    template="browser/templates/topicsDigestVM.pt"/>
+  
+  <!-- Viewlets -->
+  <browser:viewlet
+    name="groupserver.DailyTopicsDigestHtmlViewlet"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IDailyTopicsDigestViewlet"
+    manager=".interfaces.IDailyTopicsDigestHtmlVM"
+    class=".viewlets.DailyTopicsDigestViewlet"
+    template="browser/templates/topicsDigestBody-html.pt"
+    weight="10"
+    title="Daily Topics Digest"/>
+
+  <browser:viewlet
+    name="groupserver.DailyTopicsDigestTxtViewlet"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IDailyTopicsDigestViewlet"
+    manager=".interfaces.IDailyTopicsDigestTxtVM"
+    class=".viewlets.DailyTopicsDigestViewlet"
+    template="browser/templates/topicsDigestBody-txt.pt"
+    weight="10"
+    title="Daily Topics Digest"/>
+
+  <browser:viewlet
+    name="groupserver.WeeklyTopicsDigestHtmlViewlet"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IWeeklyTopicsDigestViewlet"
+    manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
+    class=".viewlets.WeeklyTopicsDigestViewlet"
+    template="browser/templates/topicsDigestBody-html.pt"
+    weight="10"
+    title="Weekly Topics Digest"/>
+   
+  <browser:viewlet
+    name="groupserver.WeeklyTopicsDigestTxtViewlet"
+    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    permission="zope2.View"
+    provides=".interfaces.IWeeklyTopicsDigestViewlet"
+    manager=".interfaces.IWeeklyTopicsDigestTxtVM"
+    class=".viewlets.WeeklyTopicsDigestViewlet"
+    template="browser/templates/topicsDigestBody-txt.pt"
+    weight="10"
+    title="Weekly Topics Digest"/>
 </configure>
 

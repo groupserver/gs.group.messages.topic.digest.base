@@ -1,0 +1,3 @@
+<tal:block content="structure provider:groupserver.WeeklyTopicsDigestTxtVM">
+    Content of the weekly topics digest in text.
+</tal:block>
