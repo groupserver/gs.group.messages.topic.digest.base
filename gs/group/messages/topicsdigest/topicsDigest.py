@@ -4,12 +4,16 @@ from zope.component import createObject
 from Products.GSSearch.queries import DigestQuery
 
 class TopicsDigest(object):
-    """ Data object that represents the content of a topics digest. """
+    """ Data object that represents the content of a topics digest and 
+        retrieves that content. """
 
     def __init__(self, context, siteInfo, freqency='daily'):
         """ freqency: Defaults to 'daily'. Providing 'weekly' will turn the 
             TopicsDigest into a weekly digest. Any other value will turn the
             TopicsDigest into a daily digest."""
+        #wpb: I will not be upset if somebody changes the freqency parameter,
+        # cause I am not super happy with how it is handled now (especially
+        # handling of unaccepted values and defining of accepted values.)
 
         self.context = context
         self.siteInfo = siteInfo
@@ -68,8 +72,10 @@ class TopicsDigest(object):
 
     @property
     def topics(self):
-        """ Provides a list of the topics that are displayed in a digest.
-            Contents are dependent on the TopicsDigest's frequency attribute."""
+        """ Provides a list of the individual items that are part of a digest.
+            Contents are dependent on the TopicsDigest's frequency attribute.
+            The list of returned items only provide data, and should be 
+            formatted by a viewlet before being displayed."""
         
         if self.freqency == 'daily':
             retval = self.__dailyTopics__()

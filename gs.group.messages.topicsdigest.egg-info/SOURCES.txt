@@ -19,6 +19,5 @@ gs/group/messages/topicsdigest/__init__.py
 gs/group/messages/topicsdigest/interfaces.py
 gs/group/messages/topicsdigest/notifiermessages.py
 gs/group/messages/topicsdigest/notifiers.py
-gs/group/messages/topicsdigest/querydigest.py
-gs/group/messages/topicsdigest/querymessage.py
+gs/group/messages/topicsdigest/topicsDigest.py
 gs/group/messages/topicsdigest/viewlets.py

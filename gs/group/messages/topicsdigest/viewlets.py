@@ -24,10 +24,10 @@ class TopicsDigestViewlet(SiteViewlet):
         self.__topicsDigest = None
 
 
-    def __buildCommonTopicDigest__(self, topic):
+    def __buildCommonFormattedTopic__(self, topic):
         assert hasattr(self, 'subject_key')
 
-        topicDigest = {
+        formattedTopic = {
             'subjectLine' : topic[self.subject_key],
             'linkLine' : u'%s/r/topic/%s' % (self.siteInfo.url,
                                                 topic['last_post_id']),
@@ -35,14 +35,14 @@ class TopicsDigestViewlet(SiteViewlet):
             'lastPostDate' : topic['lastPostDate']
             }
 
-        return topicDigest
+        return formattedTopic
 
-    def __buildTopicDigest__(self, topic):
-        return self.__buildCommonTopicDigest__(topic)
+    def __buildFormattedTopic__(self, topic):
+        return self.__buildCommonFormattedTopic__(topic)
 
     @property
     def topics(self):
-        """ Provides the content of the topics digest. """
+        """ Provides the list of topic models in the current digest."""
 
         assert hasattr(self, 'frequency')
 
@@ -51,25 +51,19 @@ class TopicsDigestViewlet(SiteViewlet):
 
         return self.__topicsDigest.topics
 
-    def topicsDigest(self):
-        """ Returns the topics digest. Must be called by a subclass."""
+    def formatTopic(self, topic):
+        """ Does the formatting needed to make the models of a topic digest
+            displayable."""
 
-        assert hasattr(self, 'frequency')
         assert hasattr(self, 'last_author_key')
 
-        topics = self.topics
-        digest = []
+        topic['lastAuthor'] = createObject('groupserver.UserFromId',
+                                    self.context,
+                                    topic[self.last_author_key])
+        dt = change_timezone(topic['last_post_date'], self.groupTz)
+        topic['lastPostDate'] = dt.strftime(date_format_by_age(dt))
 
-        for topic in topics:
-            topic['lastAuthor'] = createObject('groupserver.UserFromId',
-                                        self.context,
-                                        topic[self.last_author_key])
-            dt = change_timezone(topic['last_post_date'], self.groupTz)
-            topic['lastPostDate'] = dt.strftime(date_format_by_age(dt))
-
-            digest.append(self.__buildTopicDigest__(topic))
-
-        return digest
+        return self.__buildFormattedTopic__(topic)
 
 class DailyTopicsDigestViewlet(TopicsDigestViewlet):
     """ Viewlet used to pull data for daily topics digests. """
@@ -82,11 +76,11 @@ class DailyTopicsDigestViewlet(TopicsDigestViewlet):
         self.last_author_key = 'last_author_id'
         self.subject_key = 'original_subject'
 
-    def __buildTopicDigest__(self, topic):
-        topicDigest = self.__buildCommonTopicDigest__(topic)
-        topicDigest['numPostsToday'] = topic['num_posts_day']
-        topicDigest['numPostsTotal'] = topic['num_posts']
-        return topicDigest   
+    def __buildFormattedTopic__(self, topic):
+        formattedTopic = self.__buildCommonFormattedTopic__(topic)
+        formattedTopic['numPostsToday'] = topic['num_posts_day']
+        formattedTopic['numPostsTotal'] = topic['num_posts']
+        return formattedTopic   
 
 class WeeklyTopicsDigestViewlet(TopicsDigestViewlet):
     """ Viewlet used to pull data for weekly topics digests. """
