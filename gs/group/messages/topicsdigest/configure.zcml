@@ -8,29 +8,29 @@
 
   <!-- Topic digest message pages, in HTML and plain-text  -->
   <browser:page
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="gs-group-messages-topicsdigest-daily.html"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notifiermessages.TopicsDigestMessage"
     template="browser/templates/dailyTopicsDigest.pt"
     permission="zope2.View"/>
 
   <browser:page
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="gs-group-messages-topicsdigest-daily.txt"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notifiermessages.TopicsDigestMessageText"
     template="browser/templates/dailyTopicsDigest-txt.pt"
     permission="zope2.View"/>
 
   <browser:page
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="gs-group-messages-topicsdigest-weekly.html"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notifiermessages.TopicsDigestMessage"
     template="browser/templates/weeklyTopicsDigest.pt"
     permission="zope2.View"/>
 
   <browser:page
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
     name="gs-group-messages-topicsdigest-weekly.txt"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notifiermessages.TopicsDigestMessageText"
     template="browser/templates/weeklyTopicsDigest-txt.pt"
     permission="zope2.View"/>
@@ -38,7 +38,7 @@
   <!-- ViewletManagers -->
   <browser:viewletManager
     name="groupserver.DailyTopicsDigestHtmlVM"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IDailyTopicsDigestHtmlVM"
     class="gs.viewlet.manager.WeightOrderedViewletManager"
@@ -46,7 +46,7 @@
 
   <browser:viewletManager
     name="groupserver.DailyTopicsDigestTxtVM"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IDailyTopicsDigestTxtVM"
     class="gs.viewlet.manager.WeightOrderedViewletManager"
@@ -54,7 +54,7 @@
 
   <browser:viewletManager
     name="groupserver.WeeklyTopicsDigestHtmlVM"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IWeeklyTopicsDigestHtmlVM"
     class="gs.viewlet.manager.WeightOrderedViewletManager"
@@ -62,7 +62,7 @@
 
   <browser:viewletManager
     name="groupserver.WeeklyTopicsDigestTxtVM"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IWeeklyTopicsDigestTxtVM"
     class="gs.viewlet.manager.WeightOrderedViewletManager"
@@ -71,7 +71,7 @@
   <!-- Viewlets -->
   <browser:viewlet
     name="groupserver.DailyTopicsDigestHtmlViewlet"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IDailyTopicsDigestViewlet"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
@@ -82,7 +82,7 @@
 
   <browser:viewlet
     name="groupserver.DailyTopicsDigestTxtViewlet"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IDailyTopicsDigestViewlet"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
@@ -93,7 +93,7 @@
 
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHtmlViewlet"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
@@ -104,7 +104,7 @@
    
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestTxtViewlet"
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
