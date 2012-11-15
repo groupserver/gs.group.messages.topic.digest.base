@@ -36,7 +36,7 @@ class TopicsDigestNotifier(object):
     @property
     def subject(self):
         digestStats = self.topicsDigest.post_stats
-        subject{ 'groupShortName' : self.groupInfo.get_property('short_name', self.groupInfo.name), 
+        subject = { 'groupShortName' : self.groupInfo.get_property('short_name', self.groupInfo.name), 
             'newPosts' : digestStats.newPosts, 
             'newTopics' : digestStats.newTopics
             }

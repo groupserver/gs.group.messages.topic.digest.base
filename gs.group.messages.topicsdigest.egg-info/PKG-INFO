@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: gs.group.messages.topicsdigest
-Version: 0.98-20121115151919-3cb9efcf07b6
+Version: 0.98-20121115152652-50f0f592c77c
 Summary: Provider of topic digest email notifiers
 Home-page: http://www.groupserver.org/
 Author: Bill Bushey
