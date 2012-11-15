@@ -65,7 +65,7 @@ class WeeklyTopicsDigestNotifier(TopicsDigestNotifiers):
     textTemplateName = 'gs-group-messages-topicsdigest-weekly.txt'
     htmlTemplate = 'gs-group-messages-topicsdigest-weekly.html'
 
-    def __init__(self, context, request)
+    def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
         self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')
 
