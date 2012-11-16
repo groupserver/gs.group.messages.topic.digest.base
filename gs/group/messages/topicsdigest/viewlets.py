@@ -19,6 +19,7 @@ class HeaderFooterViewlet(SiteViewlet):
         self.siteInfo = view.siteInfo
         self.groupInfo = createObject('groupserver.GroupInfo', context)
         self.emailDomain = getattr(self.context, 'GlobalConfiguration', None).getProperty('emailDomain')
+        self.groupEmail = '%s@%s' % (self.groupInfo.get_id(), self.emailDomain)
 
 class TopicsDigestViewlet(SiteViewlet):
     """ Base Topics Digest class. Common code goes here. Not all that useful
@@ -39,7 +40,7 @@ class TopicsDigestViewlet(SiteViewlet):
 
         formattedTopic = {
             'subjectLine' : topic[self.subject_key],
-            'linkLine' : u'%s/r/topic/%s' % (self.siteInfo.url,
+            'topicUrl' : u'%s/r/topic/%s' % (self.siteInfo.url,
                                                 topic['last_post_id']),
             'lastPostAuthor' : topic['lastAuthor'],
             'lastPostDate' : topic['lastPostDate']

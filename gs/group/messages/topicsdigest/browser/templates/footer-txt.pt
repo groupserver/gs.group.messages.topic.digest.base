@@ -1,14 +1,18 @@
---
-To post a message, photo, file, or video to <tal:block replace="view/groupInfo/name"/>,
+<tal:block
+    define="siteName options/siteName | view/siteInfo/name | string: No Site Name;
+            groupName options/groupName | view/groupInfo/name | string: No Group Name;
+            groupUrl options/groupUrl | view/groupInfo/url | string: No Group URL;
+            groupEmail options/groupEmail | view/groupEmail | string: No Group Email">--
+To post a message, photo, file, or video to <tal:block replace="groupName"/>,
 log in at
-  <tal:block replace="view/groupInfo/url"/>
+  <tal:block replace="groupUrl"/>
 
-To receive an email of every post to <tal:block replace="view/groupInfo/name"/>, 
+To receive an email of every post to <tal:block replace="groupName"/>, 
 email
-  mailto:<tal:block replace="view/groupInfo/get_id"/>@<tal:block replace="view/emailDomain"/>?Subject=digest%20off
+  mailto:<tal:block replace="groupEmail"/>?Subject=digest%20off
   
-To leave <tal:block replace="view/groupInfo/name"/>, email
-  mailto:<tal:block replace="view/groupInfo/get_id"/>@<tal:block replace="view/emailDomain"/>?Subject=unsubscribe
+To leave <tal:block replace="groupName"/>, email
+  mailto:<tal:block replace="groupEmail"/>?Subject=unsubscribe
 
-<tal:block replace="view/groupInfo/name"/> is hosted by <tal:block replace="view/siteInfo/name"/> using
-GroupServer and powered by OnlineGroups.Net
+<tal:block replace="groupName"/> is hosted by <tal:block replace="siteName"/> using
+GroupServer and powered by OnlineGroups.Net</tal:block>

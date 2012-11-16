@@ -1,10 +1,8 @@
-<tal:block repeat="topic options/topics | view/topics | python:['']">
-<tal:block
+<tal:block repeat="topic options/topics | view/topics | python:['']"><tal:block
     define="formattedTopic python:view.formatTopic(topic);
             subjectLine formattedTopic/subjectLine | string:Subject Missing;
-            linkLine formattedTopic/linkLine | string:Link Missing;">
-* <tal:block content="subjectLine">Topic Subject</tal:block>
- o <tal:block content="linkLine">URL to Topic</tal:block>
+            topicUrl formattedTopic/topicUrl | string:Link Missing;">
+ * <tal:block content="subjectLine">Topic Subject</tal:block>
+ o <tal:block content="topicUrl">URL to Topic</tal:block>
 <tal:block condition="python:view.frequency == 'daily'"> o <tal:block content="formattedTopic/numPostsToday">#</tal:block> new posts, <tal:block content="formattedTopic/numPostsTotal">#</tal:block> total — latest at <tal:block content="formattedTopic/lastPostDate">date</tal:block> by <tal:block content="formattedTopic/lastPostAuthor/name">author</tal:block></tal:block><tal:block condition="python:view.frequency == 'weekly'"> o Latest post at <tal:block content="formattedTopic/lastPostDate">date</tal:block> by <tal:block content="formattedTopic/lastPostAuthor/name">author</tal:block></tal:block>
-</tal:block>
-</tal:block>
+</tal:block></tal:block>

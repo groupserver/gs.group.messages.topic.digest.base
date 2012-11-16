@@ -1,10 +1,14 @@
-<tal:block define="groupEmail python: '%s@%s' % (view.groupInfo.get_id(), view.emailDomain)">
+<tal:block 
+    define="siteName options/siteName | view/siteInfo/name | string: No Site Name;
+            groupName options/groupName | view/groupInfo/name | string: No Group Name;
+            groupUrl options/groupUrl | view/groupInfo/url | string: No Group URL;
+            groupEmail options/groupEmail | view/groupEmail | string: No Group Email">
 <hr/>
-<p>To post a message, photo, file, or video to <tal:block replace="view/groupInfo/name"/>, log in at <tal:block replace="view/groupInfo/url"/></p>
+<p>To post a message, photo, file, or video to <tal:block replace="groupName"/>, log in at <a href='' tal:attributes="href groupUrl"><tal:block replace="groupUrl"/></a></p>
 
-<p>To receive an email of every post to <tal:block replace="view/groupInfo/name"/>, email <a href='' tal:attributes="href python:'mailto:{0}?Subject=digest%20off'.format(groupEmail)"><tal:block replace="groupEmail"/></a></p>
+<p>To receive an email of every post to <tal:block replace="groupName"/>, email <a href='' tal:attributes="href python:'mailto:{0}?Subject=digest%20off'.format(groupEmail)"><tal:block replace="groupEmail"/></a> with the subject line 'digest off'.</p>
   
-<p>To leave <tal:block replace="view/groupInfo/name"/>, email <a href='' tal:attributes="href python:'mailto:%s?Subject=unsubscribe' % groupEmail "><tal:block replace="groupEmail"/></a></p>
+<p>To leave <tal:block replace="groupName"/>, email <a href='' tal:attributes="href python:'mailto:%s?Subject=unsubscribe' % groupEmail "><tal:block replace="groupEmail"/></a> with the subject line 'unsubscribe'.</p>
 
-<p><tal:block replace="view/groupInfo/name"/> is hosted by <tal:block replace="view/siteInfo/name"/> using GroupServer and powered by OnlineGroups.Net</p>
+<p><tal:block replace="groupName"/> is hosted by <tal:block replace="siteName"/> using GroupServer and powered by OnlineGroups.Net</p>
 </tal:block>

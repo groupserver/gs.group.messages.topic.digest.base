@@ -3,10 +3,9 @@
     <tal:block
         define="formattedTopic python:view.formatTopic(topic);
                 subjectLine formattedTopic/subjectLine | string:Subject Missing;
-                linkLine formattedTopic/linkLine | string:Link Missing;">
-      <li tal:content="subjectLine">Topic Subject</li>
+                topicUrl formattedTopic/topicUrl | string:Link Missing;">
+      <li><a tal:attributes="href topicUrl" tal:content="subjectLine">Topic Subject</a></li>
       <ul>
-        <li><tal:block content="linkLine">URL to Topic</tal:block></li>
         <li>
           <tal:block condition="python:view.frequency == 'daily'">
             <tal:block content="formattedTopic/numPostsToday">#</tal:block> new posts, <tal:block content="formattedTopic/numPostsTotal">#</tal:block> total - latest at <tal:block content="formattedTopic/lastPostDate">date</tal:block> by <tal:block content="formattedTopic/lastPostAuthor/name">author</tal:block>
