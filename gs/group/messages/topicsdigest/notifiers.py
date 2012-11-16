@@ -37,15 +37,16 @@ class TopicsDigestNotifier(object):
     def subject(self):
         digestStats = self.topicsDigest.post_stats
         subject = { 'groupShortName' : self.groupInfo.get_property('short_name', self.groupInfo.name), 
-            'newPosts' : digestStats.newPosts, 
-            'newTopics' : digestStats.newTopics
+            'newPosts' : digestStats['newPosts'], 
+            'newTopics' : digestStats['newTopics']
             }
-        return '%(groupShortName)s Topic Digest: %(newPosts)n New Posts, %(newTopics)n New Topics' % subject
+        return '%(groupShortName)s Topic Digest: %(newPosts)d New Posts, %(newTopics)d New Topics' % subject
 
     def notify(self):
         subject = self.subject
         text = self.textTemplate(topics=self.topicsDigest.topics)
         html = self.htmlTemplate(topics=self.topicsDigest.topics)
+        # TODO Check that we are only sending digests to users who requested them
         allusers = self.groupInfo.group_members_info.fullMembers
         for user in allusers:
             ms = MessageSender(self.context, user)
@@ -54,16 +55,16 @@ class TopicsDigestNotifier(object):
 
 class DailyTopicsDigestNotifier(TopicsDigestNotifier):
     textTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
-    htmlTemplate = 'gs-group-messages-topicsdigest-daily.html'
+    htmlTemplateName = 'gs-group-messages-topicsdigest-daily.html'
 
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
         self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'daily')
 
     
-class WeeklyTopicsDigestNotifier(TopicsDigestNotifiers):
+class WeeklyTopicsDigestNotifier(TopicsDigestNotifier):
     textTemplateName = 'gs-group-messages-topicsdigest-weekly.txt'
-    htmlTemplate = 'gs-group-messages-topicsdigest-weekly.html'
+    htmlTemplateName = 'gs-group-messages-topicsdigest-weekly.html'
 
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
