@@ -7,8 +7,22 @@ from topicsDigest import TopicsDigest
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest')
 
-# Classes used with viewlets. These classes prepare topic digest content for
-# rendering. topicsDigest.TopicsDigest does the work of retrieving the content.
+# Viewlet classes (duh). These classes prepare topic digest content for
+# rendering. TopicsDigest does the work of retrieving the content.
+
+class HeaderViewlet(SiteViewlet):
+    """ Empty class. But its ready for use in the future"""
+    pass
+
+class FooterViewlet(SiteViewlet):
+    """ Convientently provides basic info for the footer"""
+
+    def __init__(self, context, request, view, manager):
+        SiteViewlet.__init__(self, context, request, view, manager)
+
+        self.siteInfo = view.siteInfo
+        self.groupInfo = createObject('groupserver.GroupInfo', context)
+        self.emailDomain = getattr(self.context, 'GlobalConfiguration', None).getProperty('emailDomain')
 
 class TopicsDigestViewlet(SiteViewlet):
     """ Base Topics Digest class. Common code goes here. Not all that useful

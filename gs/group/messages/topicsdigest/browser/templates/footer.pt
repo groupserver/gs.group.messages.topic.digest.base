@@ -1,0 +1,10 @@
+<tal:block define="groupEmail python: '%s@%s' % (view.groupInfo.get_id(), view.emailDomain)">
+<hr/>
+<p>To post a message, photo, file, or video to <tal:block replace="view/groupInfo/name"/>, log in at <tal:block replace="view/groupInfo/url"/></p>
+
+<p>To receive an email of every post to <tal:block replace="view/groupInfo/name"/>, email <a href='' tal:attributes="href python:'mailto:{0}?Subject=digest%20off'.format(groupEmail)"><tal:block replace="groupEmail"/></a></p>
+  
+<p>To leave <tal:block replace="view/groupInfo/name"/>, email <a href='' tal:attributes="href python:'mailto:%s?Subject=unsubscribe' % groupEmail "><tal:block replace="groupEmail"/></a></p>
+
+<p><tal:block replace="view/groupInfo/name"/> is hosted by <tal:block replace="view/siteInfo/name"/> using GroupServer and powered by OnlineGroups.Net</p>
+</tal:block>
