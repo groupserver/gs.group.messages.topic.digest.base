@@ -10,12 +10,8 @@ log = getLogger('gs.group.messages.topicsdigest')
 # Viewlet classes (duh). These classes prepare topic digest content for
 # rendering. TopicsDigest does the work of retrieving the content.
 
-class HeaderViewlet(SiteViewlet):
-    """ Empty class. But its ready for use in the future"""
-    pass
-
-class FooterViewlet(SiteViewlet):
-    """ Convientently provides basic info for the footer"""
+class HeaderFooterViewlet(SiteViewlet):
+    """ Convientently provides basic info for the header and footer"""
 
     def __init__(self, context, request, view, manager):
         SiteViewlet.__init__(self, context, request, view, manager)

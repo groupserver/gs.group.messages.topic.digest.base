@@ -18,7 +18,6 @@ gs/group/__init__.py
 gs/group/__init__.pyc
 gs/group/messages/__init__.py
 gs/group/messages/__init__.pyc
-gs/group/messages/topicsdigest/.configure.zcml.swp
 gs/group/messages/topicsdigest/__init__.py
 gs/group/messages/topicsdigest/__init__.pyc
 gs/group/messages/topicsdigest/configure.zcml
@@ -34,6 +33,7 @@ gs/group/messages/topicsdigest/viewlets.pyc
 gs/group/messages/topicsdigest/browser/templates/dailyTopicsDigest-txt.pt
 gs/group/messages/topicsdigest/browser/templates/dailyTopicsDigest.pt
 gs/group/messages/topicsdigest/browser/templates/footer-txt.pt
+gs/group/messages/topicsdigest/browser/templates/footer-txt.pt~
 gs/group/messages/topicsdigest/browser/templates/footer.pt
 gs/group/messages/topicsdigest/browser/templates/header-txt.pt
 gs/group/messages/topicsdigest/browser/templates/header.pt

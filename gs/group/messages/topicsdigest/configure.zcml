@@ -75,7 +75,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
-    class=".viewlets.HeaderViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header.pt"
     weight="10"
     title="Daily Digest Header in HTML"/>
@@ -85,7 +85,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
-    class=".viewlets.HeaderViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-txt.pt"
     weight="10"
     title="Daily Digest Header in Text"/> 
@@ -95,22 +95,22 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
-    class=".viewlets.HeaderViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header.pt"
     weight="10"
     title="Weekly Digest Header in HTML"/>
     
-  <!-- Digest Body Viewlets -->
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHeaderTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
-    class=".viewlets.HeaderViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-txt.pt"
     weight="10"
     title="Weekly Digest Header in Text"/>
 
+  <!-- Digest Body Viewlets -->
   <browser:viewlet
     name="groupserver.DailyTopicsDigestHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
@@ -160,7 +160,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
-    class=".viewlets.FooterViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer.pt"
     weight="30"
     title="Daily Digest Footer in HTML"/>
@@ -170,7 +170,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
-    class=".viewlets.FooterViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-txt.pt"
     weight="30"
     title="Daily Digest Footer in Text"/> 
@@ -180,7 +180,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
-    class=".viewlets.FooterViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer.pt"
     weight="30"
     title="Weekly Digest Footer in HTML"/>
@@ -190,7 +190,7 @@
     for="gs.group.base.interfaces.IGSGroupMarker"
     permission="zope2.View"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
-    class=".viewlets.FooterViewlet"
+    class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-txt.pt"
     weight="30"
     title="Weekly Digest Footer in Text"/>
