@@ -26,7 +26,7 @@ class SendAllDigests(SiteForm):
     @form.action(label=u'Send All Digests', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
         #Get A list of all groups, then loop through and call TopicsDigestNotifer for each
-        #try:
+        try:
             groupsInfo = createObject('groupserver.GroupsInfo', self.context)
             groups = groupsInfo.get_all_groups()
             for group in groups:
