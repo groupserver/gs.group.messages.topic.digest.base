@@ -15,7 +15,11 @@ class TopicsDigestNotifier(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.siteInfo = createObject('groupserver.SiteInfo', self.context)
+
+    @Lazy 
+    def siteInfo(self):
+        retval = createObject('groupserver.SiteInfo', self.context)
+        return retval
 
     @Lazy
     def groupInfo(self):
@@ -26,7 +30,8 @@ class TopicsDigestNotifier(object):
     @Lazy
     def mailingListInfo(self):
         retval = createObject('groupserver.MailingListInfo', self.context)
-        assert retval, 'Cound not create the MailingListInfo instance from %s' % self.context
+        assert retval, 'Cound not create the MailingListInfo instance from '\
+            '%s' % self.context
         return retval
 
     @Lazy
@@ -43,14 +48,18 @@ class TopicsDigestNotifier(object):
         assert retval
         return retval
 
-    @property
+    @Lazy
     def subject(self):
+        m = '{groupShortName} Topic Digest: {newPosts} New Posts, '\
+            '{newTopics} New Topics'
+        shortName = self.groupInfo.get_property('short_name', 
+                                                self.groupInfo.name)
         digestStats = self.topicsDigest.post_stats
-        subject = { 'groupShortName' : self.groupInfo.get_property('short_name', self.groupInfo.name), 
-            'newPosts' : digestStats['newPosts'], 
-            'newTopics' : digestStats['newTopics']
-            }
-        return '%(groupShortName)s Topic Digest: %(newPosts)d New Posts, %(newTopics)d New Topics' % subject
+        retval = m.format(groupShortName=shortName, 
+                          newPosts=digestStats['newPosts'],
+                          newTopics=digestStats['newTopics'])
+        assert retval
+        return retval
 
     @Lazy
     def acl_users(self):
@@ -59,7 +68,9 @@ class TopicsDigestNotifier(object):
         return retval
 
     @Lazy
-    def mailingList(self):
+    def digestMemberAddresses(self):
+        '''Those group members who are subscribed via digest.'''
+        # TODO There MUST be a more elegant way to do this. Find it.
         mailingListInfo = createObject('groupserver.MailingListInfo', 
                                        self.context)
         mlist = mailingListInfo.mlist
@@ -69,7 +80,7 @@ class TopicsDigestNotifier(object):
 
     def notify(self):
         digestQuery = DigestQuery(self.context)
-        # check to see if we have a digest in the last day, and if so, shortcut
+        # Shortcut if we have sent a digest in the last day
         if digestQuery.has_digest_since(self.siteInfo.id, 
                                         self.groupInfo.get_id()):
             m = u'%s (%s) on %s (%s): Have already issued digest in last '\
@@ -77,20 +88,22 @@ class TopicsDigestNotifier(object):
                          self.siteInfo.name, self.siteInfo.id)
             log.info(m)
         else:
-            subject = self.subject
             text = self.textTemplate(topics=self.topicsDigest.topics)
             html = self.htmlTemplate(topics=self.topicsDigest.topics)
-            # Getting those group members who are subscribed via digest.
-            # TODO There MUST be a more elegant way to do this. Find it.
-            for address in digestMemberAddresses:
+            for address in self.digestMemberAddresses:
                 u = self.acl_users.get_userByEmail(address.lower())
                 if u:
                     userId = u.getId()
                     user = createObject('groupserver.UserFromId', self.context, 
                                         userId)
                     ms = MessageSender(self.context, user)
-                    ms.send_message(subject, text, html)
-
+                    ms.send_message(self.subject, text, html)
+                else:
+                    m = 'No user for <{address}>, but listed in {groupId} on '\
+                        '{siteId}.'
+                    msg = m.format(address=address, groupId=self.groupInfo.id,
+                                   siteId=self.siteInfo.id)
+                    log.warn(msg)
             digestQuery.update_group_digest(self.siteInfo.id, 
                                             self.groupInfo.id)
 
