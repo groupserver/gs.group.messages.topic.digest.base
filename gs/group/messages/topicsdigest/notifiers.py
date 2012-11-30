@@ -52,32 +52,47 @@ class TopicsDigestNotifier(object):
             }
         return '%(groupShortName)s Topic Digest: %(newPosts)d New Posts, %(newTopics)d New Topics' % subject
 
+    @Lazy
+    def acl_users(self):
+        site_root = self.context.site_root()
+        retval = site_root.acl_users
+        return retval
+
+    @Lazy
+    def mailingList(self):
+        mailingListInfo = createObject('groupserver.MailingListInfo', 
+                                       self.context)
+        mlist = mailingListInfo.mlist
+        retval = mlist.getValueFor('digestmaillist') or []
+        assert type(retval) == list
+        return retval
+
     def notify(self):
-        
         digestQuery = DigestQuery(self.context)
-
-	    # check to see if we have a digest in the last day, and if so, shortcut
-        if digestQuery.has_digest_since(self.siteInfo.id, self.groupInfo.get_id()):
-            m = u'%s (%s) on %s (%s): Have already issued digest in last day' % \
-              (self.groupInfo.name, self.groupInfo.id, self.siteInfo.name, self.siteInfo.id)
+        # check to see if we have a digest in the last day, and if so, shortcut
+        if digestQuery.has_digest_since(self.siteInfo.id, 
+                                        self.groupInfo.get_id()):
+            m = u'%s (%s) on %s (%s): Have already issued digest in last '\
+                'day' % (self.groupInfo.name, self.groupInfo.id, 
+                         self.siteInfo.name, self.siteInfo.id)
             log.info(m)
-            return
+        else:
+            subject = self.subject
+            text = self.textTemplate(topics=self.topicsDigest.topics)
+            html = self.htmlTemplate(topics=self.topicsDigest.topics)
+            # Getting those group members who are subscribed via digest.
+            # TODO There MUST be a more elegant way to do this. Find it.
+            for address in digestMemberAddresses:
+                u = self.acl_users.get_userByEmail(address.lower())
+                if u:
+                    userId = u.getId()
+                    user = createObject('groupserver.UserFromId', self.context, 
+                                        userId)
+                    ms = MessageSender(self.context, user)
+                    ms.send_message(subject, text, html)
 
-
-        subject = self.subject
-        text = self.textTemplate(topics=self.topicsDigest.topics)
-        html = self.htmlTemplate(topics=self.topicsDigest.topics)
-        # Getting those group members who are subscribed via digest.
-        # TODO There MUST be a more elegant way to do this. Find it.
-        digestMemberAddresses = createObject('groupserver.MailingListInfo', self.context).mlist.getValueFor('digestmaillist')
-        for address in digestMemberAddresses:
-            userId = self.context.site_root().acl_users.get_userByEmail(address.lower()).id
-            user = createObject('groupserver.UserFromId', self.context, userId)
-            ms = MessageSender(self.context, user)
-            ms.send_message(subject, text, html)
-
-        digestQuery.update_group_digest(self.siteInfo.id, self.groupInfo.get_id())
-
+            digestQuery.update_group_digest(self.siteInfo.id, 
+                                            self.groupInfo.id)
 
 class DailyTopicsDigestNotifier(TopicsDigestNotifier):
     textTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
