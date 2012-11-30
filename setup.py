@@ -32,7 +32,20 @@ setup(name='gs.group.messages.topicsdigest',
     zip_safe=True,
     install_requires=[
         'setuptools',
-        # -*- Extra requirements: -*-
+        'zope.cachedescriptors',
+        'zope.component',
+        'zope.formlib',
+        'zope.interface',
+        'zope.viewlet',
+        'Zope2',
+        'gs.auth.token',
+        'gs.content.form',
+        'gs.group.base.page',
+        'gs.profile.notify',
+        'gs.viewlet',
+        'Products.GSSearch',
+        'Products.XWFCore',
+        'Products.XWFMailingListManager',
     ],
     entry_points="""
     # -*- Entry points: -*-
