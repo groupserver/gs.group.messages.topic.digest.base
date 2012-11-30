@@ -26,18 +26,12 @@ class SendAllDigests(SiteForm):
     @form.action(label=u'Send', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
         #Get A list of all groups, then loop through and call TopicsDigestNotifer for each
-        try:
-            groupsInfo = createObject('groupserver.GroupsInfo', self.context)
-            groups = groupsInfo.get_all_groups()
-            for group in groups:
-                tdn = DailyTopicsDigestNotifier(group, self.request)
-                tdn.notify()
-            self.status = u'<p>All Digests Sent</p>'
-        except StandardError as e:
-            #TODO set the error status for this form
-            # How do I do this?
-            log.exception(e)
-            self.status = u'<p>An error occurred while sending digests. This error has been logged.</p>'
+        groupsInfo = createObject('groupserver.GroupsInfo', self.context)
+        groups = groupsInfo.get_all_groups()
+        for group in groups:
+            tdn = DailyTopicsDigestNotifier(group, self.request)
+            tdn.notify()
+        self.status = u'<p>All digests sent.</p>'
 
     def handle_send_all_digests_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)
