@@ -88,8 +88,8 @@ class TopicsDigestNotifier(object):
                          self.siteInfo.name, self.siteInfo.id)
             log.info(m)
         else:
-            text = self.textTemplate(topics=self.topicsDigest.topics)
-            html = self.htmlTemplate(topics=self.topicsDigest.topics)
+            text = self.textTemplate(topicsDigest=self.topicsDigest)
+            html = self.htmlTemplate(topicsDigest=self.topicsDigest)
             for address in self.digestMemberAddresses:
                 u = self.acl_users.get_userByEmail(address.lower())
                 if u:
@@ -124,3 +124,13 @@ class WeeklyTopicsDigestNotifier(TopicsDigestNotifier):
         TopicsDigestNotifier.__init__(self, context, request)
         self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')
 
+
+class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
+    textTemplateName = 'gs-group-messages-topicsdigest-dynamic.txt'
+    htmlTemplateName = 'gs-group-messages-topicsdigest-dynamic.html'
+
+    def __init__(self, context, request):
+        TopicsDigestNotifier.__init__(self, context, request)
+        self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'daily')
+        if self.topicsDigest.post_stats['newPosts'] == 0:
+            self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')

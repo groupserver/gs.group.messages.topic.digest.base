@@ -7,17 +7,17 @@ class TopicsDigest(object):
     """ Data object that represents the content of a topics digest and 
         retrieves that content. """
 
-    def __init__(self, context, siteInfo, freqency='daily'):
-        """ freqency: Defaults to 'daily'. Providing 'weekly' will turn the 
+    def __init__(self, context, siteInfo, frequency='daily'):
+        """ frequency: Defaults to 'daily'. Providing 'weekly' will turn the 
             TopicsDigest into a weekly digest. Any other value will turn the
             TopicsDigest into a daily digest."""
-        #wpb: I will not be upset if somebody changes the freqency parameter,
+        #wpb: I will not be upset if somebody changes the frequency parameter,
         # cause I am not super happy with how it is handled now (especially
         # handling of unaccepted values and defining of accepted values.)
 
         self.context = context
         self.siteInfo = siteInfo
-        self.freqency = 'weekly' if freqency == 'weekly' else 'daily'
+        self.frequency = 'weekly' if frequency == 'weekly' else 'daily'
 
         self.groupInfo = createObject('groupserver.GroupInfo', self.context)
         self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
@@ -77,7 +77,7 @@ class TopicsDigest(object):
             The list of returned items only provide data, and should be 
             formatted by a viewlet before being displayed."""
         
-        if self.freqency == 'daily':
+        if self.frequency == 'daily':
             retval = self.__dailyTopics__()
         else:
             retval = self.__weeklyTopics__()

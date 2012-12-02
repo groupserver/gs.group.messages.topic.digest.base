@@ -35,6 +35,18 @@
     template="browser/templates/weeklyTopicsDigest-txt.pt"
     permission="zope2.View"/>
 
+  <browser:page
+    name="gs-group-messages-topicsdigest-dynamic.html"
+    for="gs.group.base.interfaces.IGSGroupMarker"
+    class=".notifiermessages.DynamicTopicsDigestMessage"
+    permission="zope2.View"/>
+
+  <browser:page
+    name="gs-group-messages-topicsdigest-dynamic.txt"
+    for="gs.group.base.interfaces.IGSGroupMarker"
+    class=".notifiermessages.DynamicTopicsDigestMessageText"
+    permission="zope2.View"/>
+
   <!-- ViewletManagers -->
   <browser:viewletManager
     name="groupserver.DailyTopicsDigestHtmlVM"

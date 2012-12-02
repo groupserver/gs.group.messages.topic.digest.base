@@ -1,5 +1,5 @@
 <ul>
-  <tal:block repeat="topic options/topics | view/topics | python:['']">
+  <tal:block repeat="topic options/topicsDigest/topics | view/topics | python:['']">
     <tal:block
         define="formattedTopic python:view.formatTopic(topic);
                 subjectLine formattedTopic/subjectLine | string:Subject Missing;

@@ -5,7 +5,7 @@ from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
 from gs.auth.token import log_auth_error
 from interfaces import ISendAllDigests
-from notifiers import DailyTopicsDigestNotifier
+from notifiers import DynamicTopicsDigestNotifier
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
@@ -29,7 +29,7 @@ class SendAllDigests(SiteForm):
         groupsInfo = createObject('groupserver.GroupsInfo', self.context)
         groups = groupsInfo.get_all_groups()
         for group in groups:
-            tdn = DailyTopicsDigestNotifier(group, self.request)
+            tdn = DynamicTopicsDigestNotifier(group, self.request)
             tdn.notify()
         self.status = u'<p>All digests sent.</p>'
 

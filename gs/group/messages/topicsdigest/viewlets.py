@@ -82,7 +82,7 @@ class DailyTopicsDigestViewlet(TopicsDigestViewlet):
     def __init__(self, context, request, view, manager):
         TopicsDigestViewlet.__init__(self, context, request, view, manager)
 
-        self.__dailyDigestQuery = None
+        #self.__dailyDigestQuery = None
         self.frequency = 'daily'
         self.last_author_key = 'last_author_id'
         self.subject_key = 'original_subject'
@@ -99,7 +99,7 @@ class WeeklyTopicsDigestViewlet(TopicsDigestViewlet):
     def __init__(self, context, request, view, manager):
         TopicsDigestViewlet.__init__(self, context, request, view, manager)
 
-        self.__weeklyDigestQuery = None
+        #self.__weeklyDigestQuery = None
         self.frequency = 'weekly'
         self.last_author_key = 'last_post_user_id'
         self.subject_key = 'subject'
