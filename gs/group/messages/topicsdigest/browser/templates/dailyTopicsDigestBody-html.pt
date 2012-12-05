@@ -1,0 +1,15 @@
+<ul>
+  <tal:block repeat="topic options/topicsDigest/topics | view/topics | python:['']">
+    <tal:block
+        define="formattedTopic python:view.formatTopic(topic);
+                subjectLine formattedTopic/subjectLine | string:Subject Missing;
+                topicUrl formattedTopic/topicUrl | string:Link Missing;">
+      <li><a tal:attributes="href topicUrl" tal:content="subjectLine">Topic Subject</a></li>
+      <ul>
+        <li>
+          <tal:block content="formattedTopic/numPostsToday">#</tal:block> new posts, <tal:block content="formattedTopic/numPostsTotal">#</tal:block> total - latest at <tal:block content="formattedTopic/lastPostDate">date</tal:block> by <tal:block content="formattedTopic/lastPostAuthor/name">author</tal:block>
+        </li>
+      </ul>
+</tal:block>
+</tal:block>
+</ul>

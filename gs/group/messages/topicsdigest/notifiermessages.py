@@ -2,7 +2,7 @@
 from zope.component import getMultiAdapter
 from zope.cachedescriptors.property import Lazy
 from gs.group.base.page import GroupPage
-from topicsDigest import TopicsDigest
+from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
@@ -35,16 +35,15 @@ class DynamicTopicsDigestMixin(object):
         return retval
 
     def __call__(self, topicsDigest = None):
-        log.info('Called call')
         self.topicsDigest = topicsDigest if topicsDigest is not None \
-                else TopicsDigest(self.context, self.siteInfo, 'daily')
-        if self.topicsDigest.frequency == 'daily':
+                else DailyTopicsDigest(self.context, self.siteInfo)
+        if isinstance(self.topicsDigest, DailyTopicsDigest):
             if self.topicsDigest.post_stats['newPosts'] > 0:
                 self.output = self.dailyTemplate(topicsDigest=self.topicsDigest)
             else:
-                self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')
+                self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)
             
-        if self.topicsDigest.frequency == 'weekly':
+        if isinstance(self.topicsDigest, WeeklyTopicsDigest):
             self.output = self.weeklyTemplate(topicsDigest=self.topicsDigest)
 
         retval = self.output

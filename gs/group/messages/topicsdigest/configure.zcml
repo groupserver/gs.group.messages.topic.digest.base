@@ -129,7 +129,7 @@
     permission="zope2.View"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
     class=".viewlets.DailyTopicsDigestViewlet"
-    template="browser/templates/topicsDigestBody-html.pt"
+    template="browser/templates/dailyTopicsDigestBody-html.pt"
     weight="20"
     title="Daily Topics Digest"/>
 
@@ -140,7 +140,7 @@
     provides=".interfaces.IDailyTopicsDigestViewlet"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
     class=".viewlets.DailyTopicsDigestViewlet"
-    template="browser/templates/topicsDigestBody-txt.pt"
+    template="browser/templates/dailyTopicsDigestBody-txt.pt"
     weight="20"
     title="Daily Topics Digest"/>
 
@@ -151,7 +151,7 @@
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
     class=".viewlets.WeeklyTopicsDigestViewlet"
-    template="browser/templates/topicsDigestBody-html.pt"
+    template="browser/templates/weeklyTopicsDigestBody-html.pt"
     weight="20"
     title="Weekly Topics Digest"/>
    
@@ -162,7 +162,7 @@
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
     class=".viewlets.WeeklyTopicsDigestViewlet"
-    template="browser/templates/topicsDigestBody-txt.pt"
+    template="browser/templates/weeklyTopicsDigestBody-txt.pt"
     weight="20"
     title="Weekly Topics Digest"/>
 

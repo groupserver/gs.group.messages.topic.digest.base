@@ -4,7 +4,7 @@ from zope.cachedescriptors.property import Lazy
 # TODO Create and use a MessageSender made for notifying groups
 from gs.profile.notify.sender import MessageSender
 from Products.XWFMailingListManager.queries import DigestQuery
-from topicsDigest import TopicsDigest
+from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 UTF8 = 'utf-8'
 
 from logging import getLogger
@@ -113,7 +113,7 @@ class DailyTopicsDigestNotifier(TopicsDigestNotifier):
 
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'daily')
+        self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
 
     
 class WeeklyTopicsDigestNotifier(TopicsDigestNotifier):
@@ -122,7 +122,7 @@ class WeeklyTopicsDigestNotifier(TopicsDigestNotifier):
 
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')
+        self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)
 
 
 class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
@@ -131,6 +131,6 @@ class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
 
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'daily')
+        self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
         if self.topicsDigest.post_stats['newPosts'] == 0:
-            self.topicsDigest = TopicsDigest(self.context, self.siteInfo, 'weekly')
+            self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)

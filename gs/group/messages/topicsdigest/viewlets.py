@@ -2,7 +2,7 @@
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
 from gs.viewlet.viewlet import SiteViewlet
-from topicsDigest import TopicsDigest
+from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest')
@@ -32,9 +32,6 @@ class TopicsDigestViewlet(SiteViewlet):
         self.groupInfo = createObject('groupserver.GroupInfo', context)
         self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
 
-        self.__topicsDigest = None
-
-
     def __buildCommonFormattedTopic__(self, topic):
         assert hasattr(self, 'subject_key')
 
@@ -54,13 +51,10 @@ class TopicsDigestViewlet(SiteViewlet):
     @property
     def topics(self):
         """ Provides the list of topic models in the current digest."""
-
-        assert hasattr(self, 'frequency')
-
-        if self.__topicsDigest == None:
-            self.__topicsDigest = TopicsDigest(self.context, self.siteInfo, self.frequency)
-
-        return self.__topicsDigest.topics
+        assert hasattr(self, '__topicsDigest__')
+        retval = self.__topicsDigest__.topics
+        assert isinstance(retval, list)
+        return retval 
 
     def formatTopic(self, topic):
         """ Does the formatting needed to make the models of a topic digest
@@ -82,8 +76,7 @@ class DailyTopicsDigestViewlet(TopicsDigestViewlet):
     def __init__(self, context, request, view, manager):
         TopicsDigestViewlet.__init__(self, context, request, view, manager)
 
-        #self.__dailyDigestQuery = None
-        self.frequency = 'daily'
+        self.__topicsDigest__ = DailyTopicsDigest(self.context, self.siteInfo)
         self.last_author_key = 'last_author_id'
         self.subject_key = 'original_subject'
 
@@ -98,8 +91,7 @@ class WeeklyTopicsDigestViewlet(TopicsDigestViewlet):
         
     def __init__(self, context, request, view, manager):
         TopicsDigestViewlet.__init__(self, context, request, view, manager)
-
-        #self.__weeklyDigestQuery = None
-        self.frequency = 'weekly'
+        
+        self.__topicsDigest__ = WeeklyTopicsDigest(self.context, self.siteInfo)
         self.last_author_key = 'last_post_user_id'
         self.subject_key = 'subject'

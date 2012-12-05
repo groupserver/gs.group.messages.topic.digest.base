@@ -3,54 +3,19 @@ from zope.component import createObject
 
 from Products.GSSearch.queries import DigestQuery
 
-class TopicsDigest(object):
+class BaseTopicsDigest(object):
     """ Data object that represents the content of a topics digest and 
         retrieves that content. """
 
-    def __init__(self, context, siteInfo, frequency='daily'):
-        """ frequency: Defaults to 'daily'. Providing 'weekly' will turn the 
-            TopicsDigest into a weekly digest. Any other value will turn the
-            TopicsDigest into a daily digest."""
-        #wpb: I will not be upset if somebody changes the frequency parameter,
-        # cause I am not super happy with how it is handled now (especially
-        # handling of unaccepted values and defining of accepted values.)
-
+    def __init__(self, context, siteInfo):
         self.context = context
         self.siteInfo = siteInfo
-        self.frequency = 'weekly' if frequency == 'weekly' else 'daily'
 
         self.groupInfo = createObject('groupserver.GroupInfo', self.context)
         self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
 
         self.messageQuery = DigestQuery(context)
-        self.__dailyDigestQuery = self.__weeklyDigestQuery = None
-
-    def __dailyTopics__(self):
-        
-        if self.__dailyDigestQuery == None:
-            self.__dailyDigestQuery = \
-                self.messageQuery.topics_sinse_yesterday(
-                    self.siteInfo.id, [self.groupInfo.id])
-
-        retval = self.__dailyDigestQuery
-        assert type(retval) == list
-        return retval
-
-    def __weeklyTopics__(self):
-        
-        if self.__weeklyDigestQuery == None:
-            searchTokens = createObject('groupserver.SearchTextTokens',
-                self.context)
-            searchTokens.set_search_text(u'')
-            self.__weeklyDigestQuery = \
-                self.messageQuery.topic_search_keyword(searchTokens,
-                    self.siteInfo.id, [self.groupInfo.id], limit=7,
-                    offset=0, use_cache=True)
-
-        retval = self.__weeklyDigestQuery
-        assert type(retval) == list
-        return retval
-
+        self.__topics = None
 
     @property
     def post_stats(self):
@@ -73,14 +38,47 @@ class TopicsDigest(object):
     @property
     def topics(self):
         """ Provides a list of the individual items that are part of a digest.
-            Contents are dependent on the TopicsDigest's frequency attribute.
             The list of returned items only provide data, and should be 
             formatted by a viewlet before being displayed."""
-        
-        if self.frequency == 'daily':
-            retval = self.__dailyTopics__()
-        else:
-            retval = self.__weeklyTopics__()
 
+        if self.__topics == None:
+            self.__topics = self.__getTopics__()
+        retval = self.__topics
+        assert isinstance(retval, list)
+        return retval
+        
+class DailyTopicsDigest(BaseTopicsDigest):
+
+    def __init__(self, context, siteInfo):
+        BaseTopicsDigest.__init__(self, context, siteInfo)
+        self.__dailyDigestQuery__ = None
+
+    def __getTopics__(self):
+        if self.__dailyDigestQuery__ == None:
+            self.__dailyDigestQuery__ = \
+                self.messageQuery.topics_sinse_yesterday(
+                    self.siteInfo.id, [self.groupInfo.id])
+
+        retval = self.__dailyDigestQuery__
+        assert type(retval) == list
+        return retval
+
+class WeeklyTopicsDigest(BaseTopicsDigest):
+    def __init__(self, context, siteInfo):
+        BaseTopicsDigest.__init__(self, context, siteInfo)
+        self.__weeklyDigestQuery__ = None
+
+    def __getTopics__(self):
+        
+        if self.__weeklyDigestQuery__ == None:
+            searchTokens = createObject('groupserver.SearchTextTokens',
+                self.context)
+            searchTokens.set_search_text(u'')
+            self.__weeklyDigestQuery__ = \
+                self.messageQuery.topic_search_keyword(searchTokens,
+                    self.siteInfo.id, [self.groupInfo.id], limit=7,
+                    offset=0, use_cache=True)
+
+        retval = self.__weeklyDigestQuery__
         assert type(retval) == list
         return retval
