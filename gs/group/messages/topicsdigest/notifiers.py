@@ -91,13 +91,14 @@ class TopicsDigestNotifier(object):
         """
         digestQuery = DigestQuery(self.context)
         # Shortcut if we have sent a digest in the last day
-        if digestQuery.has_digest_since(self.siteInfo.id, 
-                                        self.groupInfo.get_id()):
+        #if digestQuery.has_digest_since(self.siteInfo.id, 
+        #                                self.groupInfo.get_id()):
+        if False:
             m = u'%s (%s) on %s (%s): Have already issued digest in last '\
                 'day' % (self.groupInfo.name, self.groupInfo.id, 
                          self.siteInfo.name, self.siteInfo.id)
             log.info(m)
-        else:
+        elif self.topicsDigest.show_digest:
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
             for address in self.digestMemberAddresses:
@@ -116,6 +117,11 @@ class TopicsDigestNotifier(object):
                     log.warn(msg)
             digestQuery.update_group_digest(self.siteInfo.id, 
                                             self.groupInfo.id)
+        else:
+            m = u'%s (%s) on %s (%s): No digest issued.' \
+                % (self.groupInfo.name, self.groupInfo.id, 
+                         self.siteInfo.name, self.siteInfo.id)
+            log.info(m)
 
 class DailyTopicsDigestNotifier(TopicsDigestNotifier):
     textTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
@@ -142,5 +148,5 @@ class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
         self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
-        if self.topicsDigest.post_stats['new_posts'] == 0:
+        if not self.topicsDigest.show_digest:
             self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)

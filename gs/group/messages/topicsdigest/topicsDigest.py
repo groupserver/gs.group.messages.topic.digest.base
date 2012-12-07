@@ -1,4 +1,6 @@
 # coding=utf-8
+from datetime import datetime
+import pytz
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
 
@@ -46,8 +48,15 @@ class BaseTopicsDigest(object):
         return topic
     
     @property
+    def show_digest(self):
+        """ Returns a boolean indicating whether the digest should be shown/sent
+            or not. Subclasses should override based on the relevant criteria 
+            for making this decision"""
+        return True
+
+    @property
     def post_stats(self):
-	""" A simple dict providing the following statistical info about the 
+        """ A simple dict providing the following statistical info about the 
             topic digest:
                 new_topics - Number of new topics in the digest
                 existing_topics - Number of topics in the digest that already 
@@ -131,6 +140,14 @@ class DailyTopicsDigest(BaseTopicsDigest):
         del topic['num_posts']
         return topic
 
+    @property
+    def show_digest(self):
+        """ True if there has been a post made in the group in the previous
+            24 hours."""
+        retval = (self.post_stats['new_posts'] > 0)
+        assert type(retval) == bool
+        return retval
+
 
 class WeeklyTopicsDigest(BaseTopicsDigest):
     """ Represents the content of a weekly digest."""
@@ -154,4 +171,16 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
 
         retval = self.__weeklyDigestQuery__
         assert type(retval) == list
+        return retval
+
+    @property
+    def show_digest(self):
+        """ True if today is the weekly anniversary of the most recent post
+            in the group and if there are any posts in the group."""
+        retval = (
+                (self.post_stats['existing_topics'] != 0) and \
+                (self.topics[0]['last_post_date'].strftime('%w') == \
+                    datetime.now(pytz.UTC).strftime('%w'))  
+                  )
+        assert type(retval) == bool
         return retval

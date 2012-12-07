@@ -32,6 +32,7 @@ setup(name='gs.group.messages.topicsdigest',
     zip_safe=True,
     install_requires=[
         'setuptools',
+        'pytz',
         'zope.cachedescriptors',
         'zope.component',
         'zope.formlib',
