@@ -38,7 +38,7 @@ class DynamicTopicsDigestMixin(object):
         self.topicsDigest = topicsDigest if topicsDigest is not None \
                 else DailyTopicsDigest(self.context, self.siteInfo)
         if isinstance(self.topicsDigest, DailyTopicsDigest):
-            if self.topicsDigest.post_stats['newPosts'] > 0:
+            if self.topicsDigest.post_stats['new_posts'] > 0:
                 self.output = self.dailyTemplate(topicsDigest=self.topicsDigest)
             else:
                 self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)

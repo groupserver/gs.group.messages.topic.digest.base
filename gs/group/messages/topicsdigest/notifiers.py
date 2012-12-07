@@ -50,14 +50,14 @@ class TopicsDigestNotifier(object):
 
     @Lazy
     def subject(self):
-        m = '{groupShortName} Topic Digest: {newPosts} New Posts, '\
-            '{newTopics} New Topics'
+        m = '{groupShortName} Topic Digest: {new_posts} New Posts, '\
+            '{new_topics} New Topics'
         shortName = self.groupInfo.get_property('short_name', 
                                                 self.groupInfo.name)
         digestStats = self.topicsDigest.post_stats
         retval = m.format(groupShortName=shortName, 
-                          newPosts=digestStats['newPosts'],
-                          newTopics=digestStats['newTopics'])
+                          new_posts=digestStats['new_posts'],
+                          new_topics=digestStats['new_topics'])
         assert retval
         return retval
 
@@ -70,7 +70,6 @@ class TopicsDigestNotifier(object):
     @Lazy
     def digestMemberAddresses(self):
         '''Those group members who are subscribed via digest.'''
-        # TODO There MUST be a more elegant way to do this. Find it.
         mailingListInfo = createObject('groupserver.MailingListInfo', 
                                        self.context)
         mlist = mailingListInfo.mlist
@@ -79,6 +78,17 @@ class TopicsDigestNotifier(object):
         return retval
 
     def notify(self):
+        """ 
+        Creates the text and html bodies of an digest email (using template 
+        names defined by subclasses) and the subject line of a digest email 
+        based on information retrieved from the database. Then sends the digest
+        email to members of the group who are subscribed to topics digests. 
+        
+        A digest log is also checked and modified. If the log shows that a
+        digest has been sent to the group in the previous 24 hours, a digest
+        will not be created and sent. If a digest is created and sent, the log
+        will be updated to reflect when the digest emails were sent.
+        """
         digestQuery = DigestQuery(self.context)
         # Shortcut if we have sent a digest in the last day
         if digestQuery.has_digest_since(self.siteInfo.id, 
@@ -132,5 +142,5 @@ class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
     def __init__(self, context, request):
         TopicsDigestNotifier.__init__(self, context, request)
         self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
-        if self.topicsDigest.post_stats['newPosts'] == 0:
+        if self.topicsDigest.post_stats['new_posts'] == 0:
             self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)

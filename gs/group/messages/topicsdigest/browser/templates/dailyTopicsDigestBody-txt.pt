@@ -1,8 +1,7 @@
 <tal:block repeat="topic options/topicsDigest/topics | view/topics | python:['']"><tal:block
-    define="formattedTopic python:view.formatTopic(topic);
-            subjectLine formattedTopic/subjectLine | string:Subject Missing;
-            topicUrl formattedTopic/topicUrl | string:Link Missing;">
- * <tal:block content="subjectLine">Topic Subject</tal:block>
- o <tal:block content="topicUrl">URL to Topic</tal:block>
- o <tal:block content="formattedTopic/numPostsToday">#</tal:block> new posts, <tal:block content="formattedTopic/numPostsTotal">#</tal:block> total — latest at <tal:block content="formattedTopic/lastPostDate">date</tal:block> by <tal:block content="formattedTopic/lastPostAuthor/name">author</tal:block>
+    define="topic_subject topic/topic_subject | string:Subject Missing;
+            topic_url topic/topic_url | string:Link Missing;">
+ * <tal:block content="topic_subject">Topic Subject</tal:block>
+ o <tal:block content="topic_url">URL to Topic</tal:block>
+ o <tal:block content="topic/num_posts_today">#</tal:block> new posts, <tal:block content="topic/num_posts_total">#</tal:block> total — latest at <tal:block content="topic/last_post_date">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
 </tal:block></tal:block>
