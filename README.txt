@@ -20,10 +20,10 @@ Types of Digests
 
 Three types of digests are available:
  
- * Daily Digest   - Digest of activity in a group from the previous 24 hours.
- * Weekly Digest  - Digest of activity for the seven most recently posted to
-                    topics. Meant to be delivered as a weekly reminder to users.
- * Dynamic Digest - A daily digest if there has been activity in the group in
+* Daily Digest   - Digest of activity in a group from the previous 24 hours.
+* Weekly Digest  - Digest of activity for the seven most recently posted to
+  topics. Meant to be delivered as a weekly reminder to users.
+* Dynamic Digest - A daily digest if there has been activity in the group in
                     the previous 24 hours. Otherwise, a weekly digest.
 
 
@@ -32,9 +32,9 @@ Notifiers
 
 Three Notifiers are available in notifiers.py:
 
- * DailyTopicsDigestNotifier
- * WeeklyTopicsDigestNotifier
- * DynamicTopicsDigestNotifier
+* DailyTopicsDigestNotifier
+* WeeklyTopicsDigestNotifier
+* DynamicTopicsDigestNotifier
 
 These classes provide a notify method, which sends digest emails to members of 
 a group who are subscribed to digests. The body of these emails is construted 
@@ -47,17 +47,20 @@ Digest Pages
 
 The following pages are available for groups and produce full digest content:
 
- * Daily Digests
-    gs-group-messages-topicsdigest-daily.html
-    gs-group-messages-topicsdigest-daily.txt
-  
- * Weekly Digests
-    gs-group-messages-topicsdigest-weekly.html
-    gs-group-messages-topicsdigest-weekly.txt
+* Daily Digests
 
- * Dynamic Digests
-    gs-group-messages-topicsdigest-dynamic.html
-    gs-group-messages-topicsdigest-dynamic.txt
+  *gs-group-messages-topicsdigest-daily.html
+  *gs-group-messages-topicsdigest-daily.txt
+  
+* Weekly Digests
+
+  * gs-group-messages-topicsdigest-weekly.html
+  * gs-group-messages-topicsdigest-weekly.txt
+
+* Dynamic Digests
+
+  * gs-group-messages-topicsdigest-dynamic.html
+  * gs-group-messages-topicsdigest-dynamic.txt
 
 Classes for the above pages can be found in notifiermessages.py. Nothing very
 interesting happens in the classes for Daily and Weekly digests. The classes for
@@ -75,8 +78,8 @@ well as their parent class BaseTopicsDigest, are defined in topicsDigest.py.
 
 TopicsDigest classes provide two properties:
 
- * post_stats - A simple dict providing statistics about the topic digest
- * topics - A list containg dicts which provides info about each topic
+* post_stats - A simple dict providing statistics about the topic digest
+* topics - A list containg dicts which provides info about each topic
 
 See the docstrings for BaseTopicsDigest, DailyTopicsDigest, and 
 WeeklyTopicsDigest for the attributes of the dicts provided by post_stats and 
@@ -89,10 +92,10 @@ Digest Viewlet Managers
 The following viewlet managers are used to add content to their respective 
 rendered digest:
 
- * groupserver.DailyTopicsDigestHtmlVM
- * groupserver.DailyTopicsDigestTxtVM
- * groupserver.WeeklyTopicsDigestHtmlVM
- * groupserver.WeeklyTopicsDigestTxtVM
+* groupserver.DailyTopicsDigestHtmlVM
+* groupserver.DailyTopicsDigestTxtVM
+* groupserver.WeeklyTopicsDigestHtmlVM
+* groupserver.WeeklyTopicsDigestTxtVM
 
 All use the same class - gs.viewlet.manager.WeightOrderedViewletManager - and 
 the same template - topicsDigestVM.pt.
@@ -102,10 +105,10 @@ Digest Body Viewlets
 
 The following viewlets are used to create the body of topics digests:
 
- * groupserver.DailyTopicsDigestHtmlViewlet
- * groupserver.DailyTopicsDigestTxtViewlet
- * groupserver.WeeklyTopicsDigestHtmlViewlet
- * groupserver.WeeklyTopicsDigestTxtViewlet
+* groupserver.DailyTopicsDigestHtmlViewlet
+* groupserver.DailyTopicsDigestTxtViewlet
+* groupserver.WeeklyTopicsDigestHtmlViewlet
+* groupserver.WeeklyTopicsDigestTxtViewlet
 
 Classes for these viewlets -TopicsDigestViewlet, DailyTopicsDigestViewlet, and
 WeeklyTopicsDigestViewlet - can be found in viewlets.py. These classes primarily
@@ -124,18 +127,18 @@ Headers and Footers
 The following viewlets control the content, look, and design of the top portion
 of digests:
 
- * groupserver.DailyTopicsDigestHeaderHtmlViewlet
- * groupserver.DailyTopicsDigestHeaderTxtViewlet
- * groupserver.WeeklyTopicsDigestHeaderHtmlViewlet
- * groupserver.WeeklyTopicsDigestHeaderTxtViewlet
+* groupserver.DailyTopicsDigestHeaderHtmlViewlet
+* groupserver.DailyTopicsDigestHeaderTxtViewlet
+* groupserver.WeeklyTopicsDigestHeaderHtmlViewlet
+* groupserver.WeeklyTopicsDigestHeaderTxtViewlet
 
 The following viewlets control the content, look, and design of the bottom
 portion of digests:
 
- * groupserver.DailyTopicsDigestFooterHtmlViewlet
- * groupserver.DailyTopicsDigestFooterTxtViewlet
- * groupserver.WeeklyTopicsDigestFooterHtmlViewlet
- * groupserver.WeeklyTopicsDigestFooterTxtViewlet
+* groupserver.DailyTopicsDigestFooterHtmlViewlet
+* groupserver.DailyTopicsDigestFooterTxtViewlet
+* groupserver.WeeklyTopicsDigestFooterHtmlViewlet
+* groupserver.WeeklyTopicsDigestFooterTxtViewlet
 
 All of these viewlets rely on the HeaderFooterViewlet class, found in 
 viewlets.py. The templates for these viewlets are header-* and footer-*.
