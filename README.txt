@@ -24,7 +24,7 @@ Three types of digests are available:
 * Weekly Digest  - Digest of activity for the seven most recently posted to
   topics. Meant to be delivered as a weekly reminder to users.
 * Dynamic Digest - A daily digest if there has been activity in the group in
-                    the previous 24 hours. Otherwise, a weekly digest.
+  the previous 24 hours. Otherwise, a weekly digest.
 
 
 Notifiers
@@ -49,8 +49,8 @@ The following pages are available for groups and produce full digest content:
 
 * Daily Digests
 
-  *gs-group-messages-topicsdigest-daily.html
-  *gs-group-messages-topicsdigest-daily.txt
+  * gs-group-messages-topicsdigest-daily.html
+  * gs-group-messages-topicsdigest-daily.txt
   
 * Weekly Digests
 
