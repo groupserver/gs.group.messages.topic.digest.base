@@ -3,8 +3,10 @@ from datetime import datetime
 import pytz
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
-
 from Products.GSSearch.queries import DigestQuery
+
+from logging import getLogger
+log = getLogger('gs.group.messages.topicsdigest.topicsdigest')
 
 class BaseTopicsDigest(object):
     """ Data object that represents the content of a topics digest and 
@@ -38,7 +40,7 @@ class BaseTopicsDigest(object):
 
         # Fix time
         dt = change_timezone(topic['last_post_date'], self.groupTz)
-        topic['last_post_date'] = dt.strftime(date_format_by_age(dt))
+        topic['last_post_date_str'] = dt.strftime(date_format_by_age(dt))
 
         # Change names and remove redundent information
         topic['topic_subject'] = topic[self.__subject_key__]
@@ -89,9 +91,11 @@ class BaseTopicsDigest(object):
                 topic_url - URL to view the topic
                 last_post_author - An IGSUserInfo implementation representing 
                                    the last user to post in the topic
-                last_post_date -  Date and time of the last post in the topic, 
-                                  as a string, adjusted for the timezone of the
-                                  site host
+                last_post_date - Datetime of the last post in the topic, as
+                                 provided by the database
+                last_post_date_str -  Date and time of the last post in the 
+                                      topic, as a string, adjusted for the 
+                                      timezone of the group
                 last_post_id - ID string of the last post in in the topic
 
             Subclasses of BaseTopicsDigest may provide additional attributes.
@@ -175,10 +179,13 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
 
     @property
     def show_digest(self):
-        """ True if today is the weekly anniversary of the most recent post
-            in the group and if there are any posts in the group."""
+        """ True if there are posts in the group, the most recent post is
+            not from today, and today is the weekly anniversary of the most 
+            recent post in the group."""
         retval = (
                 (self.post_stats['existing_topics'] != 0) and \
+                (self.topics[0]['last_post_date'].strftime('%Y%j') != \
+                    datetime.now(pytz.UTC).strftime('%Y%j')) and \
                 (self.topics[0]['last_post_date'].strftime('%w') == \
                     datetime.now(pytz.UTC).strftime('%w'))  
                   )

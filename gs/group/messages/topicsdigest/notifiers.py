@@ -82,7 +82,9 @@ class TopicsDigestNotifier(object):
         Creates the text and html bodies of an digest email (using template 
         names defined by subclasses) and the subject line of a digest email 
         based on information retrieved from the database. Then sends the digest
-        email to members of the group who are subscribed to topics digests. 
+        email to members of the group who are subscribed to topics digests, it
+        the information from the database indicates that a digest should be
+        sent. 
         
         A digest log is also checked and modified. If the log shows that a
         digest has been sent to the group in the previous 24 hours, a digest
@@ -91,9 +93,8 @@ class TopicsDigestNotifier(object):
         """
         digestQuery = DigestQuery(self.context)
         # Shortcut if we have sent a digest in the last day
-        #if digestQuery.has_digest_since(self.siteInfo.id, 
-        #                                self.groupInfo.get_id()):
-        if False:
+        if digestQuery.has_digest_since(self.siteInfo.id, 
+                                        self.groupInfo.get_id()):
             m = u'%s (%s) on %s (%s): Have already issued digest in last '\
                 'day' % (self.groupInfo.name, self.groupInfo.id, 
                          self.siteInfo.name, self.siteInfo.id)

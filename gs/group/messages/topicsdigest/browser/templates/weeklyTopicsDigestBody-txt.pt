@@ -3,5 +3,5 @@
             topic_url topic/topic_url | string:Link Missing;">
  * <tal:block content="topic_subject">Topic Subject</tal:block>
  o <tal:block content="topic_url">URL to Topic</tal:block>
- o Latest post at <tal:block content="topic/last_post_date">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
+ o Latest post at <tal:block content="topic/last_post_date_str">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
 </tal:block></tal:block>
