@@ -9,14 +9,17 @@ log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
 
 # Classes used with page templates
 
+
 class TopicsDigestMessage(GroupPage):
     pass
+
 
 class TopicsDigestMessageText(TopicsDigestMessage):
     def __init__(self, context, request):
         TopicsDigestMessage.__init__(self, context, request)
         response = request.response
         response.setHeader("Content-Type", "text/plain; charset=UTF-8")
+
 
 class DynamicTopicsDigestMixin(object):
 
@@ -34,33 +37,37 @@ class DynamicTopicsDigestMixin(object):
         assert retval
         return retval
 
-    def __call__(self, topicsDigest = None):
+    def __call__(self, topicsDigest=None):
         self.topicsDigest = topicsDigest if topicsDigest is not None \
                 else DailyTopicsDigest(self.context, self.siteInfo)
         if isinstance(self.topicsDigest, DailyTopicsDigest):
             if self.topicsDigest.post_stats['new_posts'] > 0:
-                self.output = self.dailyTemplate(topicsDigest=self.topicsDigest)
+                self.output = \
+                    self.dailyTemplate(topicsDigest=self.topicsDigest)
             else:
-                self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)
-            
+                self.topicsDigest = \
+                    WeeklyTopicsDigest(self.context, self.siteInfo)
+
         if isinstance(self.topicsDigest, WeeklyTopicsDigest):
             self.output = self.weeklyTemplate(topicsDigest=self.topicsDigest)
 
         retval = self.output
         return retval
 
-class DynamicTopicsDigestMessage(TopicsDigestMessage, DynamicTopicsDigestMixin):
+
+class DynamicTopicsDigestMessage(TopicsDigestMessage,
+                                    DynamicTopicsDigestMixin):
     dailyTemplateName = 'gs-group-messages-topicsdigest-daily.html'
     weeklyTemplateName = 'gs-group-messages-topicsdigest-weekly.html'
 
     def __init__(self, context, request):
         TopicsDigestMessage.__init__(self, context, request)
-        
 
-class DynamicTopicsDigestMessageText(TopicsDigestMessageText, DynamicTopicsDigestMixin):
+
+class DynamicTopicsDigestMessageText(TopicsDigestMessageText,
+                                        DynamicTopicsDigestMixin):
     dailyTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
     weeklyTemplateName = 'gs-group-messages-topicsdigest-weekly.txt'
 
-    def __init__(self, context, request, topicsDigest = None):
+    def __init__(self, context, request, topicsDigest=None):
         TopicsDigestMessage.__init__(self, context, request)
-        
