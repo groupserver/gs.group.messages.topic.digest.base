@@ -8,10 +8,11 @@ from Products.GSSearch.queries import DigestQuery
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.topicsdigest')
 
+
 class BaseTopicsDigest(object):
-    """ Data object that represents the content of a topics digest and 
-        retrieves that content from the database. 
-        
+    """ Data object that represents the content of a topics digest and
+        retrieves that content from the database.
+
         Not meant to be directly created. Instead, a subclass must be created.
         """
 
@@ -48,27 +49,27 @@ class BaseTopicsDigest(object):
         del topic[self.__last_author_key__]
 
         return topic
-    
+
     @property
     def show_digest(self):
-        """ Returns a boolean indicating whether the digest should be shown/sent
-            or not. Subclasses should override based on the relevant criteria 
+        """ Returns a boolean indicating whether the digest should be shown (or
+             sent). Subclasses should override based on the relevant criteria
             for making this decision"""
         return True
 
     @property
     def post_stats(self):
-        """ A simple dict providing the following statistical info about the 
+        """ A simple dict providing the following statistical info about the
             topic digest:
                 new_topics - Number of new topics in the digest
-                existing_topics - Number of topics in the digest that already 
+                existing_topics - Number of topics in the digest that already
                                   existed
                 new_posts - Total number of new posts in the digest
         """
 
         retval = {'new_topics': 0,
                   'existing_topics': 0,
-                  'new_posts':  0}
+                  'new_posts': 0}
         for topic in self.topics:
             numPostsToday = topic.get('num_posts_today', 0)
             if numPostsToday and (numPostsToday == topic['num_posts_total']):
@@ -77,24 +78,24 @@ class BaseTopicsDigest(object):
                 retval['existing_topics'] = retval['existing_topics'] + 1
             retval['new_posts'] = retval['new_posts'] + numPostsToday
         assert type(retval) == dict, 'Not a dict'
-        assert 'new_topics'       in retval.keys()
-        assert 'existing_topics'  in retval.keys()
-        assert 'new_posts'        in retval.keys()
+        assert 'new_topics' in retval.keys()
+        assert 'existing_topics' in retval.keys()
+        assert 'new_posts' in retval.keys()
         return retval
 
     @property
     def topics(self):
         """ Provides a list of the individual items that are part of a digest.
             Each item is a dict that provides the following attributes about
-            a topic:    
+            a topic:
                 topic_subject - The subject/title of the topic
                 topic_url - URL to view the topic
-                last_post_author - An IGSUserInfo implementation representing 
+                last_post_author - An IGSUserInfo implementation representing
                                    the last user to post in the topic
                 last_post_date - Datetime of the last post in the topic, as
                                  provided by the database
-                last_post_date_str -  Date and time of the last post in the 
-                                      topic, as a string, adjusted for the 
+                last_post_date_str -  Date and time of the last post in the
+                                      topic, as a string, adjusted for the
                                       timezone of the group
                 last_post_id - ID string of the last post in in the topic
 
@@ -103,17 +104,18 @@ class BaseTopicsDigest(object):
 
         assert hasattr(self, '__getTopics__')
 
-        if self.__topics == None:
+        if self.__topics is None:
             self.__topics = self.__getTopics__()
-            self.__topics = [self.__formatTopic__(topic) for topic in self.__topics] 
+            self.__topics = [self.__formatTopic__(topic)
+                                for topic in self.__topics]
         retval = self.__topics
         assert isinstance(retval, list)
         return retval
 
-        
+
 class DailyTopicsDigest(BaseTopicsDigest):
     """ Represents the content of a daily digest.
-        
+
         Dicts in the list provided by topics include the following attributes,
         in addition to the standard attributes:
             num_posts_today - Number of posts made in the topic today
@@ -127,7 +129,7 @@ class DailyTopicsDigest(BaseTopicsDigest):
         self.__subject_key__ = 'original_subject'
 
     def __getTopics__(self):
-        if self.__dailyDigestQuery__ == None:
+        if self.__dailyDigestQuery__ is None:
             self.__dailyDigestQuery__ = \
                 self.messageQuery.topics_sinse_yesterday(
                     self.siteInfo.id, [self.groupInfo.id])
@@ -163,8 +165,8 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
         self.__subject_key__ = 'subject'
 
     def __getTopics__(self):
-        
-        if self.__weeklyDigestQuery__ == None:
+
+        if self.__weeklyDigestQuery__ is None:
             searchTokens = createObject('groupserver.SearchTextTokens',
                 self.context)
             searchTokens.set_search_text(u'')
@@ -180,14 +182,12 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
     @property
     def show_digest(self):
         """ True if there are posts in the group, the most recent post is
-            not from today, and today is the weekly anniversary of the most 
+            not from today, and today is the weekly anniversary of the most
             recent post in the group."""
-        retval = (
-                (self.post_stats['existing_topics'] != 0) and \
-                (self.topics[0]['last_post_date'].strftime('%Y%j') != \
-                    datetime.now(pytz.UTC).strftime('%Y%j')) and \
-                (self.topics[0]['last_post_date'].strftime('%w') == \
-                    datetime.now(pytz.UTC).strftime('%w'))  
-                  )
+        retval = ((self.post_stats['existing_topics'] != 0) and
+                  (self.topics[0]['last_post_date'].strftime('%Y%j') !=
+                    datetime.now(pytz.UTC).strftime('%Y%j')) and
+                  (self.topics[0]['last_post_date'].strftime('%w') ==
+                    datetime.now(pytz.UTC).strftime('%w')))
         assert type(retval) == bool
         return retval

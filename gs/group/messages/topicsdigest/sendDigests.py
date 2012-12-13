@@ -10,6 +10,7 @@ from notifiers import DynamicTopicsDigestNotifier
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
 
+
 class SendAllDigests(SiteForm):
     label = u'Send Digests for All Groups on the Site'
     pageTemplateFileName = 'browser/templates/send_all_digests.pt'
@@ -17,7 +18,7 @@ class SendAllDigests(SiteForm):
     form_fields = form.Fields(ISendAllDigests, render_context=False)
 
     def setUpWidgets(self, ignore_request=False):
-        data = {'name': self.siteInfo.name,}
+        data = {'name': self.siteInfo.name, }
         self.widgets = form.setUpWidgets(
             self.form_fields, self.prefix, self.context,
             self.request, form=self, data=data,
@@ -25,7 +26,8 @@ class SendAllDigests(SiteForm):
 
     @form.action(label=u'Send', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
-        #Get A list of all groups, then loop through and call TopicsDigestNotifer for each
+        # Get A list of all groups, then loop through and call
+        # TopicsDigestNotifer for each
         groupsInfo = createObject('groupserver.GroupsInfo', self.context)
         groups = groupsInfo.get_all_groups()
         for group in groups:
@@ -35,7 +37,7 @@ class SendAllDigests(SiteForm):
 
     def handle_send_all_digests_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)
-        if len(errors) ==1:
+        if len(errors) == 1:
             self.status = u'<p>There is an error:</p>'
 
         assert type(self.status) == unicode
