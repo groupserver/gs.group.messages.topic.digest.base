@@ -28,7 +28,7 @@ class SendAllDigests(SiteForm):
     def sites(self):
         '''All sites in a GroupServer instance'''
         # The digest sender sends digests for all groups the share the same
-        # GroupServer *INSTANCE* as the site we currently on. This itterator
+        # GroupServer *INSTANCE* as the site we currently on. This iterator
         # gets all the sites.
         # TODO: Put in a generic place (gs.site.base?)
         site_root = self.context.site_root()
@@ -40,8 +40,8 @@ class SendAllDigests(SiteForm):
                 yield s
 
     def groups_for_site(self, site):
-        '''An itterator for all groups on a site.'''
-        # --=mpj17=-- I am using an itterator so we do not load all the group
+        '''An iterator for all groups on a site.'''
+        # --=mpj17=-- I am using an iterator so we do not load all the group
         # instances into RAM in one hit. ('groupserver.GroupsInfo' needs to
         # be fixed so it treads lightly on RAM.)
         groups = getattr(site, 'groups')
