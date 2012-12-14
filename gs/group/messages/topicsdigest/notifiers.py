@@ -76,7 +76,7 @@ class TopicsDigestNotifier(object):
         # Only return real addresses for real users
         retval = [a for a in rawList
                     if (('@' in a)
-                        and self.acl_users.get_userByEmail(a.lower()))]
+                        and self.acl_users.get_userIdByEmail(a.lower()))]
         assert type(retval) == list
         return retval
 
@@ -97,10 +97,17 @@ class TopicsDigestNotifier(object):
         digestQuery = DigestQuery(self.context)
         # Shortcut if we have sent a digest in the last day
         if digestQuery.has_digest_since(self.siteInfo.id, self.groupInfo.id):
-            m = u'%s (%s) on %s (%s): Have already issued digest in last '\
-                'day' % (self.groupInfo.name, self.groupInfo.id,
-                         self.siteInfo.name, self.siteInfo.id)
-            log.info(m)
+            try:
+                m = 'Have already issued a digest in the last day to {0} '\
+                    '({1}) on {2} ({3})'
+                msg = m.format(self.groupInfo.name.encode('ascii', 'ignore'),
+                                self.groupInfo.id.encode('ascii', 'ignore'),
+                                self.siteInfo.name.encode('ascii', 'ignore'),
+                                self.siteInfo.id.encode('ascii', 'ignore'))
+            except UnicodeDecodeError:
+                pass  # I have no idea what more I can do
+            else:
+                log.info(msg)
         elif self.topicsDigest.show_digest:
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
@@ -110,16 +117,29 @@ class TopicsDigestNotifier(object):
                         messageString)
             digestQuery.update_group_digest(self.siteInfo.id,
                                             self.groupInfo.id)
-            m = 'Sent digest from {0} ({1}) on {2} ({3}) to {4} '\
-                'address.'.format(self.groupInfo.name, self.groupInfo.id,
-                                    self.siteInfo.name, self.siteInfo.id,
-                                    len(self.digestMemberAddresses))
-            log.info(m)
+            try:
+                m = 'Sent digest from {0} ({1}) on {2} ({3}) to {4} '\
+                    'address.'
+                msg = m.format(self.groupInfo.name.encode('ascii', 'ignore'),
+                                self.groupInfo.id.encode('ascii', 'ignore'),
+                                self.siteInfo.name.encode('ascii', 'ignore'),
+                                self.siteInfo.id.encode('ascii', 'ignore'),
+                                len(self.digestMemberAddresses))
+            except UnicodeDecodeError:
+                pass  # I have no idea what more I can do
+            else:
+                log.info(msg)
         else:
-            m = u'%s (%s) on %s (%s): No digest issued.' \
-                % (self.groupInfo.name, self.groupInfo.id,
-                         self.siteInfo.name, self.siteInfo.id)
-            log.info(m)
+            m = 'No digest issued for {0} ({1} on {2} ({3})'
+            try:
+                msg = m.format(self.groupInfo.name.encode('ascii', 'ignore'),
+                                self.groupInfo.id.encode('ascii', 'ignore'),
+                                self.siteInfo.name.encode('ascii', 'ignore'),
+                                self.siteInfo.id.encode('ascii', 'ignore'))
+            except UnicodeDecodeError:
+                pass  # I have no idea what more I can do
+            else:
+                log.info(msg)
 
 
 class DailyTopicsDigestNotifier(TopicsDigestNotifier):
