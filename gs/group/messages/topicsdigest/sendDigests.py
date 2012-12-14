@@ -1,6 +1,4 @@
 # coding=utf-8
-from zope.cachedescriptors.property import Lazy
-from zope.component import createObject
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
@@ -38,7 +36,7 @@ class SendAllDigests(SiteForm):
         sIds = content.objectIds(FOLDER_TYPES)
         for sId in sIds:
             s = getattr(content, sId)
-            if s.getProperty('is_division', False):
+            if s.getProperty('is_division', False) and hasattr(s, 'groups'):
                 yield s
 
     def groups_for_site(self, site):
