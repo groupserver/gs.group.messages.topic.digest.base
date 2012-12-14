@@ -110,6 +110,11 @@ class TopicsDigestNotifier(object):
                         messageString)
             digestQuery.update_group_digest(self.siteInfo.id,
                                             self.groupInfo.id)
+            m = 'Sent digest from {0} ({1}) on {2} ({3}) to {4} '\
+                'address.'.format(self.groupInfo.name, self.groupInfo.id,
+                                    self.siteInfo.name, self.siteInfo.id,
+                                    len(self.digestMemberAddresses))
+            log.info(m)
         else:
             m = u'%s (%s) on %s (%s): No digest issued.' \
                 % (self.groupInfo.name, self.groupInfo.id,
