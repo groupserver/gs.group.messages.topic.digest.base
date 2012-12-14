@@ -16,6 +16,13 @@ class Message(object):
         self.context = self.group = group
 
     @Lazy
+    def siteInfo(self):
+        assert self.context
+        retval = createObject('groupserver.SiteInfo', self.context)
+        assert retval, 'Could not create the site info'
+        return retval
+
+    @Lazy
     def groupInfo(self):
         retval = createObject('groupserver.GroupInfo', self.context)
         assert retval, 'Could not create the GroupInfo from %s' % self.context
@@ -31,7 +38,7 @@ class Message(object):
     @Lazy
     def toAddress(self):
         address = self.mailingListInfo.get_property('mailto')
-        retval = formataddr((self.groupInfo.name.encode(utf8), address))
+        retval = formataddr((self.groupInfo.name, address))
         return retval
 
     @Lazy
@@ -41,13 +48,13 @@ class Message(object):
 
     @Lazy
     def fromAddress(self):
-        retval = formataddr((self.groupInfo.name.encode(utf8),
-                                self.rawFromAddress))
+        retval = formataddr((self.groupInfo.name, self.rawFromAddress))
         return retval
 
     def h(self, h):
         'Turn the text h into a nice header string'
         retval = str(Header(h, utf8))
+        assert retval
         return retval
 
     def create_message(self, subject, txtMessage, htmlMessage):
@@ -65,22 +72,27 @@ class Message(object):
         container['User-Agent'] = self.h(brag)
 
         # RFC2369 headers: <http://tools.ietf.org/html/rfc2369>
-        p = '<mailto:{0}>'.format(self.rawFromAddress)
-        container['List-Post'] = self.h(p)
+        try:
+            p = '<mailto:{0}>'.format(self.rawFromAddress)
+            container['List-Post'] = self.h(p)
 
-        u = '<mailto:{0}?Subject=Unsubscribe>'.format(self.rawFromAddress)
-        container['List-Unsubscribe'] = self.h(u)
+            u = '<mailto:{0}?Subject=Unsubscribe>'.format(self.rawFromAddress)
+            container['List-Unsubscribe'] = self.h(u)
 
-        a = '<{0}> (Archive of {1})'.format(self.groupInfo.url,
-                                            self.groupInfo.name)
-        container['List-Archive'] = self.h(a)
+            a = '<{0}> (Archive of {1})'.format(self.groupInfo.url,
+                                            self.groupInfo.name.encode(utf8))
+            container['List-Archive'] = self.h(a)
 
-        helpS = '<{0}/help> (Help)'.format(self.siteInfo.url)
-        container['List-Help'] = self.h(helpS)
+            helpS = '<{0}/help> (Help)'.format(self.siteInfo.url)
+            container['List-Help'] = self.h(helpS)
 
-        s = '<mailto:{0}> ({1} Support)'.format(
-                self.siteInfo.get_support_email(), self.siteInfo.name)
-        container['List-Owner'] = self.h(s)
+            s = '<mailto:{0}> ({1} Support)'.format(
+                                            self.siteInfo.get_support_email(),
+                                            self.siteInfo.name.encode(utf8))
+            container['List-Owner'] = self.h(s)
+        except UnicodeDecodeError:
+            # Sometimes data is just too messed up.
+            pass
 
         # Construct the body
         txt = MIMEText(txtMessage.encode(utf8), 'plain', utf8)
