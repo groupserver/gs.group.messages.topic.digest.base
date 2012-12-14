@@ -27,7 +27,7 @@ setup(name='gs.group.messages.topicsdigest',
     url='http://www.groupserver.org/',
     license='other',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['gs', 'gs.group', 'gs.group.messages'], 
+    namespace_packages=['gs', 'gs.group', 'gs.group.messages'],
     include_package_data=True,
     zip_safe=True,
     install_requires=[
@@ -41,8 +41,8 @@ setup(name='gs.group.messages.topicsdigest',
         'Zope2',
         'gs.auth.token',
         'gs.content.form',
+        'gs.email',
         'gs.group.base',
-        'gs.profile.notify',
         'gs.viewlet',
         'Products.GSSearch',
         'Products.XWFCore',
@@ -51,5 +51,3 @@ setup(name='gs.group.messages.topicsdigest',
     entry_points="""
     # -*- Entry points: -*-
     """,)
-
-
