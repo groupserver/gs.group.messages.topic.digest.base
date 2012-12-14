@@ -1,6 +1,7 @@
 # coding=utf-8
-from zope.formlib import form
+from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
+from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
 from gs.auth.token import log_auth_error
@@ -9,6 +10,7 @@ from notifiers import DynamicTopicsDigestNotifier
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
+FOLDER_TYPES = ['Folder', 'Folder (Ordered)']
 
 
 class SendAllDigests(SiteForm):
@@ -24,15 +26,43 @@ class SendAllDigests(SiteForm):
             self.request, form=self, data=data,
             ignore_request=ignore_request)
 
+    @property
+    def sites(self):
+        '''All sites in a GroupServer instance'''
+        # The digest sender sends digests for all groups the share the same
+        # GroupServer *INSTANCE* as the site we currently on. This itterator
+        # gets all the sites.
+        # TODO: Put in a generic place (gs.site.base?)
+        site_root = self.context.site_root()
+        content = getattr(site_root, 'Content')
+        sIds = content.objectIds(FOLDER_TYPES)
+        for sId in sIds:
+            s = getattr(content, sId)
+            if s.getProperty('is_division', False):
+                yield s
+
+    def groups_for_site(self, site):
+        '''An itterator for all groups on a site.'''
+        # --=mpj17=-- I am using an itterator so we do not load all the group
+        # instances into RAM in one hit. ('groupserver.GroupsInfo' needs to
+        # be fixed so it treads lightly on RAM.)
+        groups = getattr(site, 'groups')
+        gIds = groups.objectIds(FOLDER_TYPES)
+        for gId in gIds:
+            g = getattr(groups, gId)
+            if g.getProperty('is_group', False):
+                yield g
+
     @form.action(label=u'Send', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
-        # Get A list of all groups, then loop through and call
-        # TopicsDigestNotifer for each
-        groupsInfo = createObject('groupserver.GroupsInfo', self.context)
-        groups = groupsInfo.get_all_groups()
-        for group in groups:
-            tdn = DynamicTopicsDigestNotifier(group, self.request)
-            tdn.notify()
+        log.info('Processing the digests')
+
+        for site in self.sites:
+            for group in self.groups_for_site(site):
+                tdn = DynamicTopicsDigestNotifier(group, self.request)
+                tdn.notify()
+
+        log.info('All digests sent')
         self.status = u'<p>All digests sent.</p>'
 
     def handle_send_all_digests_failure(self, action, data, errors):
