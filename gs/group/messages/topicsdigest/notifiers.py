@@ -1,10 +1,10 @@
 # coding=utf-8
 from zope.component import createObject, getMultiAdapter
 from zope.cachedescriptors.property import Lazy
-# TODO Create and use a MessageSender made for notifying groups
-from gs.profile.notify.sender import MessageSender
 from Products.XWFMailingListManager.queries import DigestQuery
+from gs.email import send_email
 from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
+from message import Message
 UTF8 = 'utf-8'
 
 from logging import getLogger
@@ -13,38 +13,38 @@ log = getLogger('gs.group.messages.topicsdigest.notifiers')
 
 class TopicsDigestNotifier(object):
 
-    def __init__(self, context, request):
-        self.context = context
+    def __init__(self, group, request):
+        self.context = self.group = group
         self.request = request
 
     @Lazy
     def siteInfo(self):
-        retval = createObject('groupserver.SiteInfo', self.context)
+        retval = createObject('groupserver.SiteInfo', self.group)
         return retval
 
     @Lazy
     def groupInfo(self):
-        retval = createObject('groupserver.GroupInfo', self.context)
-        assert retval, 'Could not create the GroupInfo from %s' % self.context
+        retval = createObject('groupserver.GroupInfo', self.group)
+        assert retval, 'Could not create the GroupInfo from %s' % self.group
         return retval
 
     @Lazy
     def mailingListInfo(self):
-        retval = createObject('groupserver.MailingListInfo', self.context)
+        retval = createObject('groupserver.MailingListInfo', self.group)
         assert retval, 'Cound not create the MailingListInfo instance from '\
             '%s' % self.context
         return retval
 
     @Lazy
     def textTemplate(self):
-        retval = getMultiAdapter((self.context, self.request),
+        retval = getMultiAdapter((self.group, self.request),
                     name=self.textTemplateName)
         assert retval
         return retval
 
     @Lazy
     def htmlTemplate(self):
-        retval = getMultiAdapter((self.context, self.request),
+        retval = getMultiAdapter((self.group, self.request),
                     name=self.htmlTemplateName)
         assert retval
         return retval
@@ -71,10 +71,12 @@ class TopicsDigestNotifier(object):
     @Lazy
     def digestMemberAddresses(self):
         '''Those group members who are subscribed via digest.'''
-        mailingListInfo = createObject('groupserver.MailingListInfo',
-                                       self.context)
-        mlist = mailingListInfo.mlist
-        retval = mlist.getValueFor('digestmaillist') or []
+        mlist = self.mailingListInfo.mlist
+        rawList = mlist.getValueFor('digestmaillist') or []
+        # Only return real addresses for real users
+        retval = [a for a in rawList
+                    if (('@' in a)
+                        and self.acl_users.get_userByEmail(a.lower()))]
         assert type(retval) == list
         return retval
 
@@ -94,8 +96,7 @@ class TopicsDigestNotifier(object):
         """
         digestQuery = DigestQuery(self.context)
         # Shortcut if we have sent a digest in the last day
-        if digestQuery.has_digest_since(self.siteInfo.id,
-                                        self.groupInfo.get_id()):
+        if digestQuery.has_digest_since(self.siteInfo.id, self.groupInfo.id):
             m = u'%s (%s) on %s (%s): Have already issued digest in last '\
                 'day' % (self.groupInfo.name, self.groupInfo.id,
                          self.siteInfo.name, self.siteInfo.id)
@@ -103,20 +104,10 @@ class TopicsDigestNotifier(object):
         elif self.topicsDigest.show_digest:
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
-            for address in self.digestMemberAddresses:
-                u = self.acl_users.get_userByEmail(address.lower())
-                if u:
-                    userId = u.getId()
-                    user = createObject('groupserver.UserFromId', self.context,
-                                        userId)
-                    ms = MessageSender(self.context, user)
-                    ms.send_message(self.subject, text, html)
-                else:
-                    m = 'No user for <{address}>, but listed in {groupId} on '\
-                        '{siteId}.'
-                    msg = m.format(address=address, groupId=self.groupInfo.id,
-                                   siteId=self.siteInfo.id)
-                    log.warn(msg)
+            message = Message(self.group)
+            messageString = message.create_message(self.subject, text, html)
+            send_email(message.rawFromAddress, self.digestMemberAddresses,
+                        messageString)
             digestQuery.update_group_digest(self.siteInfo.id,
                                             self.groupInfo.id)
         else:
