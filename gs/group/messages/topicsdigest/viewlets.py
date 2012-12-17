@@ -1,7 +1,7 @@
 # coding=utf-8
 from zope.component import createObject
 from gs.viewlet.viewlet import SiteViewlet
-from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
+from topicsDigest import BaseTopicsDigest, DailyTopicsDigest, WeeklyTopicsDigest
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest')
@@ -32,11 +32,11 @@ class TopicsDigestViewlet(SiteViewlet):
         self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
 
     @property
-    def topics(self):
+    def topicsDigest(self):
         """ Provides the list of topic models in the current digest."""
         assert hasattr(self, '__topicsDigest__')
-        retval = self.__topicsDigest__.topics
-        assert isinstance(retval, list)
+        retval = self.__topicsDigest__
+        assert isinstance(retval, BaseTopicsDigest)
         return retval
 
 

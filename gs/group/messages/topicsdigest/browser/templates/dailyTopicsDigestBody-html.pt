@@ -1,14 +1,22 @@
-<ul>
-  <tal:block repeat="topic options/topicsDigest/topics | view/topics | python:['']">
-    <tal:block
-        define="topic_subject topic/topic_subject | string:Subject Missing;
-                topic_url topic/topic_url | string:Link Missing;">
-      <li><a tal:attributes="href topic_url" tal:content="topic_subject">Topic Subject</a></li>
-      <ul>
-        <li>
-          <tal:block content="topic/num_posts_today">#</tal:block> new posts, <tal:block content="topic/num_posts_total">#</tal:block> total - latest at <tal:block content="topic/last_post_date_str">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
-        </li>
-      </ul>
+<tal:block define=" groupName options/groupName | view/groupInfo/name;
+                    topicsDigest options/topicsDigest | view/topicsDigest;
+                    np python:topicsDigest.post_stats['new_posts'];
+                    et python:topicsDigest.post_stats['existing_topics'];
+                    nt python:topicsDigest.post_stats['new_topics']">
+  <p>This is a daily digest of posts made to <span tal:content="groupName">the group</span>.</p>
+  <p>There <tal:block replace="python: np==1 and 'is' or 'are'"/> <tal:block replace="np"/> new <tal:block replace="python:np==1 and 'post' or 'posts'"/> <tal:block condition="python:nt or et">in </tal:block><tal:block condition="nt"><tal:block replace="nt"/> new <tal:block replace="python:nt==1 and 'topic' or 'topics'"/></tal:block><tal:block condition="python:nt and et"> and</tal:block><tal:block condition="et"> <tal:block replace="et"/> existing <tal:block replace="python:et==1 and 'topic' or 'topics'"/></tal:block> since yesterday.</p>
+  <ul>
+    <tal:block repeat="topic topicsDigest/topics | topicsDigest/topics | python:['']">
+      <tal:block
+          define="topic_subject topic/topic_subject | string:Subject Missing;
+                  topic_url topic/topic_url | string:Link Missing;">
+        <li><a tal:attributes="href topic_url" tal:content="topic_subject">Topic Subject</a></li>
+        <ul>
+          <li>
+            <tal:block content="topic/num_posts_today">#</tal:block> new posts, <tal:block content="topic/num_posts_total">#</tal:block> total - latest at <tal:block content="topic/last_post_date_str">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
+          </li>
+        </ul>
+      </tal:block>
+    </tal:block>
+  </ul>
 </tal:block>
-</tal:block>
-</ul>

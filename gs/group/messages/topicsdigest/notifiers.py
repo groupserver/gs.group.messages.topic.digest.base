@@ -108,10 +108,10 @@ class TopicsDigestNotifier(object):
             digestQuery.update_group_digest(self.siteInfo.id,
                                             self.groupInfo.id)
 
-            m = 'Sent digest from {0} on {2} to {3} address.'
+            m = 'Sent digest from {0} on {1} to {2} address.'
             msg = m.format(self.groupInfo.id, self.siteInfo.id,
                             len(self.digestMemberAddresses))
-            log(msg)
+            log.info(msg)
 
 
 class DailyTopicsDigestNotifier(TopicsDigestNotifier):
