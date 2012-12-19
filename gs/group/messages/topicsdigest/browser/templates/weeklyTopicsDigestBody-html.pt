@@ -1,14 +1,18 @@
-<ul>
-  <tal:block repeat="topic options/topicsDigest/topics | view/topics | python:['']">
-    <tal:block
-        define="topic_subject topic/topic_subject | string:Subject Missing;
-                topic_url topic/topic_url | string:Link Missing;">
-      <li><a tal:attributes="href topic_url" tal:content="topic_subject">Topic Subject</a></li>
-      <ul>
-        <li>
-          Latest post at <tal:block content="topic/last_post_date_str">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
-        </li>
-      </ul>
+<tal:block define="groupName options/groupName | view/groupInfo/name">
+  <p>There were no new posts to <span tal:content="groupName">the group</span> since the last digest.</p>
+  <p>Some recent topics are listed below.</p>
+  <ul>
+    <tal:block repeat="topic options/topicsDigest/topics | view/topicsDigest/topics | python:['']">
+      <tal:block
+          define="topic_subject topic/topic_subject | string:Subject Missing;
+                  topic_url topic/topic_url | string:Link Missing;">
+        <li><a tal:attributes="href topic_url" tal:content="topic_subject">Topic Subject</a></li>
+        <ul>
+          <li>
+            Latest post at <tal:block content="topic/last_post_date_str">date</tal:block> by <tal:block content="topic/last_post_author/name">author</tal:block>
+          </li>
+        </ul>
+      </tal:block>
+    </tal:block>
+  </ul>
 </tal:block>
-</tal:block>
-</ul>
