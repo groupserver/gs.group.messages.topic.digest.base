@@ -23,7 +23,7 @@ class BaseTopicsDigest(object):
         self.groupInfo = createObject('groupserver.GroupInfo', self.context)
         self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
 
-        self.messageQuery = DigestQuery(context)
+        self.messageQuery = DigestQuery()
         self.__topics = None
 
     def __formatTopic__(self, topic):
