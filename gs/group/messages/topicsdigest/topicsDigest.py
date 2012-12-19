@@ -1,6 +1,7 @@
 # coding=utf-8
 from datetime import datetime
 import pytz
+from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
 from queries import DigestQuery
@@ -19,12 +20,22 @@ class BaseTopicsDigest(object):
     def __init__(self, context, siteInfo):
         self.context = context
         self.siteInfo = siteInfo
-
-        self.groupInfo = createObject('groupserver.GroupInfo', self.context)
-        self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
-
-        self.messageQuery = DigestQuery()
         self.__topics = None
+
+    @Lazy
+    def groupInfo(self):
+        retval = createObject('groupserver.GroupInfo', self.context)
+        return retval
+
+    @Lazy
+    def groupTz(self):
+        retval = self.groupInfo.get_property('group_tz', 'UTC')
+        return retval
+
+    @Lazy
+    def messageQuery(self):
+        retval = DigestQuery()
+        return retval
 
     def __formatTopic__(self, topic):
         # Adds a few fields, and establishes a common set of topic attributes
@@ -123,7 +134,7 @@ class DailyTopicsDigest(BaseTopicsDigest):
         """
 
     def __init__(self, context, siteInfo):
-        BaseTopicsDigest.__init__(self, context, siteInfo)
+        super(DailyTopicsDigest).__init__(context, siteInfo)
         self.__dailyDigestQuery__ = None
         self.__last_author_key__ = 'last_author_id'
         self.__subject_key__ = 'original_subject'
@@ -159,7 +170,7 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
     """ Represents the content of a weekly digest."""
 
     def __init__(self, context, siteInfo):
-        BaseTopicsDigest.__init__(self, context, siteInfo)
+        super(WeeklyTopicsDigest, self).__init__(context, siteInfo)
         self.__weeklyDigestQuery__ = None
         self.__last_author_key__ = 'last_post_user_id'
         self.__subject_key__ = 'subject'
