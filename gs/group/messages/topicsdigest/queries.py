@@ -79,11 +79,7 @@ class SendQuery(object):
 class DigestQuery(MessageQuery):
 
     def __init__(self):
-
-        self.topicTable = getTable('topic')
-        self.topicKeywordsTable = getTable('topic_keywords')
-        self.postTable = getTable('post')
-        self.fileTable = getTable('file')
+        super(DigestQuery, self).__init__(None)
 
     def topics_sinse_yesterday(self, siteId, groupIds):
         tt = self.topicTable
@@ -109,8 +105,8 @@ class DigestQuery(MessageQuery):
         #  FROM topic
         #  WHERE topic.site_id = 'main'
         #    AND topic.group_id = 'mpls'
-        s = self.add_standard_where_clauses(s, tt, siteId, groupIds,
-                False)
+        s.append_whereclause(tt.c.site_id == siteId)
+        s.append_whereclause(tt.c.group_id in groupIds)
         #    AND topic.last_post_date >= timestamp 'yesterday'
         s.append_whereclause(tt.c.last_post_date >= yesterday)
 
