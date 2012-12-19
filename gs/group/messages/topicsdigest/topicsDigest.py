@@ -3,7 +3,7 @@ from datetime import datetime
 import pytz
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
-from Products.GSSearch.queries import DigestQuery
+from queries import DigestQuery
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.topicsdigest')

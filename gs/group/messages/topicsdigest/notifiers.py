@@ -1,10 +1,10 @@
 # coding=utf-8
 from zope.component import createObject, getMultiAdapter
 from zope.cachedescriptors.property import Lazy
-from Products.XWFMailingListManager.queries import DigestQuery
 from gs.email import send_email
 from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 from message import Message
+from queries import SendQuery
 UTF8 = 'utf-8'
 
 from logging import getLogger
@@ -94,10 +94,10 @@ class TopicsDigestNotifier(object):
         will not be created and sent. If a digest is created and sent, the log
         will be updated to reflect when the digest emails were sent.
         """
-        digestQuery = DigestQuery(self.context)
+        sendQuery = SendQuery()
 
-        if ((not digestQuery.has_digest_since(self.siteInfo.id,
-                                                self.groupInfo.id))
+        if ((not sendQuery.has_digest_since(self.siteInfo.id,
+                                            self.groupInfo.id))
             and self.topicsDigest.show_digest):
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
@@ -105,8 +105,7 @@ class TopicsDigestNotifier(object):
             messageString = message.create_message(self.subject, text, html)
             send_email(message.rawFromAddress, self.digestMemberAddresses,
                         messageString)
-            digestQuery.update_group_digest(self.siteInfo.id,
-                                            self.groupInfo.id)
+            sendQuery.update_group_digest(self.siteInfo.id, self.groupInfo.id)
 
             m = 'Sent digest from {0} on {2} to {3} address.'
             msg = m.format(self.groupInfo.id, self.siteInfo.id,
