@@ -137,7 +137,7 @@ class DailyTopicsDigest(BaseTopicsDigest):
         super(DailyTopicsDigest, self).__init__(context, siteInfo)
         self.__dailyDigestQuery__ = None
         self.__last_author_key__ = 'last_author_id'
-        self.__subject_key__ = 'original_subject'
+        self.__subject_key__ = 'subject'
 
     def __getTopics__(self):
         if self.__dailyDigestQuery__ is None:
@@ -146,7 +146,6 @@ class DailyTopicsDigest(BaseTopicsDigest):
                                                             self.groupInfo.id)
 
         retval = self.__dailyDigestQuery__
-        print retval
         assert type(retval) == list
         return retval
 
