@@ -3,48 +3,36 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five">
 
-  <!-- topicsDigestBody-html.pt and topicsDigestBody-txt.pt do all of the controlling
-       of the look of digest bodies.-->
+  <!-- topicsDigestBody-html.pt and topicsDigestBody-txt.pt do 
+       all of the controlling of the look of digest bodies.-->
 
   <!-- Topic digest message pages, in HTML and plain-text  -->
   <browser:page
     name="gs-group-messages-topicsdigest-daily.html"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.TopicsDigestMessage"
+    class=".notifiermessages.DailyMessage"
     template="browser/templates/dailyTopicsDigest-html.pt"
     permission="zope2.View"/>
 
   <browser:page
     name="gs-group-messages-topicsdigest-daily.txt"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.TopicsDigestMessageText"
+    class=".notifiermessages.DailyMessageText"
     template="browser/templates/dailyTopicsDigest-txt.pt"
     permission="zope2.View"/>
 
   <browser:page
     name="gs-group-messages-topicsdigest-weekly.html"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.TopicsDigestMessage"
+    class=".notifiermessages.WeeklyMessage"
     template="browser/templates/weeklyTopicsDigest-html.pt"
     permission="zope2.View"/>
 
   <browser:page
     name="gs-group-messages-topicsdigest-weekly.txt"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.TopicsDigestMessageText"
+    class=".notifiermessages.WeeklyMessageText"
     template="browser/templates/weeklyTopicsDigest-txt.pt"
-    permission="zope2.View"/>
-
-  <browser:page
-    name="gs-group-messages-topicsdigest-dynamic.html"
-    for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.DynamicTopicsDigestMessage"
-    permission="zope2.View"/>
-
-  <browser:page
-    name="gs-group-messages-topicsdigest-dynamic.txt"
-    for="gs.group.base.interfaces.IGSGroupMarker"
-    class=".notifiermessages.DynamicTopicsDigestMessageText"
     permission="zope2.View"/>
 
   <!-- ViewletManagers -->
