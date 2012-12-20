@@ -3,7 +3,7 @@ import datetime
 import sqlalchemy as sa
 from zope.sqlalchemy import mark_changed
 from gs.database import getTable, getSession
-from Products.XWFMailingListManager.queries import MessageQuery
+from gs.group.messages.topics.queries import TopicsQuery
 
 
 class SendQuery(object):
@@ -15,7 +15,7 @@ class SendQuery(object):
     def has_digest_since(self, site_id, group_id,
                         interval=datetime.timedelta(0.9)):
         """ Have there been any digests sent in the last 'interval' time
-        period?
+        period? (Default 21.6 hours)
 
         """
         sincetime = self.now - interval
@@ -76,19 +76,23 @@ class SendQuery(object):
         mark_changed(session)
 
 
-class DigestQuery(MessageQuery):
+class DigestQuery(TopicsQuery):
 
     def __init__(self):
-        super(DigestQuery, self).__init__(None)
+        super(DigestQuery, self).__init__()
 
     def topics_sinse_yesterday(self, siteId, groupIds):
         tt = self.topicTable
+        tkt = self.topicKeywordsTable
         pt = self.postTable
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
 
         #SELECT topic.topic_id, topic.original_subject, topic.last_post_id,
         #  topic.last_post_date, topic.num_posts,
-        cols = list(self.topicCols) + [
+        cols = (tt.c.topic_id, tt.c.site_id, tt.c.group_id,
+                tt.c.original_subject, tt.c.first_post_id,
+                tt.c.last_post_id, tt.c.num_posts, tt.c.last_post_date,
+                   tkt.c.keywords,
         #  (SELECT COUNT(*)
         #    FROM post
         #    WHERE (post.topic_id = topic.topic_id)
@@ -100,7 +104,7 @@ class DigestQuery(MessageQuery):
                          ).as_scalar().label('num_posts_day'),
                sa.select([pt.c.user_id],
                          pt.c.post_id == tt.c.last_post_id
-                         ).as_scalar().label('last_author_id')]
+                         ).as_scalar().label('last_author_id'))
         s = sa.select(cols, order_by=sa.desc(tt.c.last_post_date))
         #  FROM topic
         #  WHERE topic.site_id = 'main'
@@ -109,13 +113,14 @@ class DigestQuery(MessageQuery):
         s.append_whereclause(tt.c.group_id in groupIds)
         #    AND topic.last_post_date >= timestamp 'yesterday'
         s.append_whereclause(tt.c.last_post_date >= yesterday)
+        s.append_whereclause(tt.c.topic_id == tkt.c.topic_id)
 
         session = getSession()
         r = session.execute(s)
 
         retval = [{
                   'topic_id': x['topic_id'],
-                  'original_subject': x['original_subject'],
+                  'subject': x['original_subject'],
                   'keywords': x['keywords'],
                   'first_post_id': x['first_post_id'],
                   'last_post_id': x['last_post_id'],
