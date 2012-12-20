@@ -134,7 +134,7 @@ class DailyTopicsDigest(BaseTopicsDigest):
         """
 
     def __init__(self, context, siteInfo):
-        super(DailyTopicsDigest).__init__(context, siteInfo)
+        super(DailyTopicsDigest, self).__init__(context, siteInfo)
         self.__dailyDigestQuery__ = None
         self.__last_author_key__ = 'last_author_id'
         self.__subject_key__ = 'original_subject'
@@ -157,7 +157,7 @@ class DailyTopicsDigest(BaseTopicsDigest):
         del topic['num_posts']
         return topic
 
-    @property
+    @Lazy
     def show_digest(self):
         """ True if there has been a post made in the group in the previous
             24 hours."""
@@ -178,19 +178,15 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
     def __getTopics__(self):
 
         if self.__weeklyDigestQuery__ is None:
-            searchTokens = createObject('groupserver.SearchTextTokens',
-                self.context)
-            searchTokens.set_search_text(u'')
             self.__weeklyDigestQuery__ = \
-                self.messageQuery.topic_search_keyword(searchTokens,
-                    self.siteInfo.id, [self.groupInfo.id], limit=7,
-                    offset=0, use_cache=True)
+                self.messageQuery.recent_non_sitcky_topics(self.siteInfo.id,
+                                        self.groupInfo.id, limit=7, offset=0)
 
         retval = self.__weeklyDigestQuery__
         assert type(retval) == list
         return retval
 
-    @property
+    @Lazy
     def show_digest(self):
         """ True if there are posts in the group, the most recent post is
             not from today, and today is the weekly anniversary of the most
