@@ -11,11 +11,18 @@ from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiers')
 
 
-class TopicsDigestNotifier(object):
+class DynamicTopicsDigestNotifier(object):
 
     def __init__(self, group, request):
         self.context = self.group = group
         self.request = request
+
+    @Lazy
+    def topicsDigest(self):
+        retval = DailyTopicsDigest(self.context, self.siteInfo)
+        if not retval.show_digest:
+            retval = WeeklyTopicsDigest(self.context, self.siteInfo)
+        return retval
 
     @Lazy
     def siteInfo(self):
@@ -29,23 +36,34 @@ class TopicsDigestNotifier(object):
         return retval
 
     @Lazy
-    def mailingListInfo(self):
-        retval = createObject('groupserver.MailingListInfo', self.group)
-        assert retval, 'Cound not create the MailingListInfo instance from '\
-            '%s' % self.context
+    def senderQuery(self):
+        retval = SendQuery()
+        return retval
+
+    @Lazy
+    def daily(self):
+        'Returns True if we should send a daily digest'
+        retval = self.sendQuery.has_digest_since(self.siteInfo.id,
+                                                    self.groupInfo.id)
+        return retval
+
+    @Lazy
+    def baseTemplate(self):
+        period = 'daily' if self.daily else 'weekly'
+        retval = 'gs-group-messages-topicsdigest-{0}'.format(period)
         return retval
 
     @Lazy
     def textTemplate(self):
-        retval = getMultiAdapter((self.group, self.request),
-                    name=self.textTemplateName)
+        templateName = '{0}.txt'.format(self.baseTemplate)
+        retval = getMultiAdapter((self.group, self.request), name=templateName)
         assert retval
         return retval
 
     @Lazy
     def htmlTemplate(self):
-        retval = getMultiAdapter((self.group, self.request),
-                    name=self.htmlTemplateName)
+        templateName = '{0}.html'.format(self.baseTemplate)
+        retval = getMultiAdapter((self.group, self.request), name=templateName)
         assert retval
         return retval
 
@@ -63,20 +81,18 @@ class TopicsDigestNotifier(object):
         return retval
 
     @Lazy
-    def acl_users(self):
-        site_root = self.context.site_root()
-        retval = site_root.acl_users
-        return retval
-
-    @Lazy
     def digestMemberAddresses(self):
         '''Those group members who are subscribed via digest.'''
-        mlist = self.mailingListInfo.mlist
+        mListInfo = createObject('groupserver.MailingListInfo', self.group)
+        mlist = mListInfo .mlist
         rawList = mlist.getValueFor('digestmaillist') or []
+
+        site_root = self.context.site_root()
+        acl_users = site_root.acl_users
         # Only return real addresses for real users
         retval = [a for a in rawList
                     if (('@' in a)
-                        and self.acl_users.get_userIdByEmail(a.lower()))]
+                        and acl_users.get_userIdByEmail(a.lower()))]
         assert type(retval) == list
         return retval
 
@@ -94,49 +110,18 @@ class TopicsDigestNotifier(object):
         will not be created and sent. If a digest is created and sent, the log
         will be updated to reflect when the digest emails were sent.
         """
-        sendQuery = SendQuery()
-
-        if ((not sendQuery.has_digest_since(self.siteInfo.id,
-                                            self.groupInfo.id))
-            and self.topicsDigest.show_digest):
+        if (self.daily
+            or ((not self.daily) and self.topicsDigest.show_digest)):
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
             message = Message(self.group)
             messageString = message.create_message(self.subject, text, html)
             send_email(message.rawFromAddress, self.digestMemberAddresses,
                         messageString)
-            sendQuery.update_group_digest(self.siteInfo.id, self.groupInfo.id)
+            self.sendQuery.update_group_digest(self.siteInfo.id,
+                                                self.groupInfo.id)
 
             m = 'Sent digest from {0} on {1} to {2} address.'
             msg = m.format(self.groupInfo.id, self.siteInfo.id,
                             len(self.digestMemberAddresses))
             log.info(msg)
-
-
-class DailyTopicsDigestNotifier(TopicsDigestNotifier):
-    textTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
-    htmlTemplateName = 'gs-group-messages-topicsdigest-daily.html'
-
-    def __init__(self, context, request):
-        TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
-
-
-class WeeklyTopicsDigestNotifier(TopicsDigestNotifier):
-    textTemplateName = 'gs-group-messages-topicsdigest-weekly.txt'
-    htmlTemplateName = 'gs-group-messages-topicsdigest-weekly.html'
-
-    def __init__(self, context, request):
-        TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)
-
-
-class DynamicTopicsDigestNotifier(TopicsDigestNotifier):
-    textTemplateName = 'gs-group-messages-topicsdigest-dynamic.txt'
-    htmlTemplateName = 'gs-group-messages-topicsdigest-dynamic.html'
-
-    def __init__(self, context, request):
-        TopicsDigestNotifier.__init__(self, context, request)
-        self.topicsDigest = DailyTopicsDigest(self.context, self.siteInfo)
-        if not self.topicsDigest.show_digest:
-            self.topicsDigest = WeeklyTopicsDigest(self.context, self.siteInfo)
