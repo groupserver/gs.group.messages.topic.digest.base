@@ -81,7 +81,7 @@ class DigestQuery(TopicsQuery):
     def __init__(self):
         super(DigestQuery, self).__init__()
 
-    def topics_sinse_yesterday(self, siteId, groupIds):
+    def topics_sinse_yesterday(self, siteId, groupId):
         tt = self.topicTable
         tkt = self.topicKeywordsTable
         pt = self.postTable
@@ -110,7 +110,7 @@ class DigestQuery(TopicsQuery):
         #  WHERE topic.site_id = 'main'
         #    AND topic.group_id = 'mpls'
         s.append_whereclause(tt.c.site_id == siteId)
-        s.append_whereclause(tt.c.group_id in groupIds)
+        s.append_whereclause(tt.c.group_id == groupId)
         #    AND topic.last_post_date >= timestamp 'yesterday'
         s.append_whereclause(tt.c.last_post_date >= yesterday)
         s.append_whereclause(tt.c.topic_id == tkt.c.topic_id)

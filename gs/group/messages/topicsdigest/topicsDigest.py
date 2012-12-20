@@ -142,10 +142,11 @@ class DailyTopicsDigest(BaseTopicsDigest):
     def __getTopics__(self):
         if self.__dailyDigestQuery__ is None:
             self.__dailyDigestQuery__ = \
-                self.messageQuery.topics_sinse_yesterday(
-                    self.siteInfo.id, [self.groupInfo.id])
+                self.messageQuery.topics_sinse_yesterday(self.siteInfo.id,
+                                                            self.groupInfo.id)
 
         retval = self.__dailyDigestQuery__
+        print retval
         assert type(retval) == list
         return retval
 
