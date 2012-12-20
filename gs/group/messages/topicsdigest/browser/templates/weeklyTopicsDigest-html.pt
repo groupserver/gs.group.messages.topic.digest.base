@@ -3,11 +3,12 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Weekly Topics Digest</title>
+    <title>Weekly Digest:
+      <tal:block content="view/groupInfo/name"/>:
+      <tal:block content="view/siteInfo/name"/></title>
   </head>
-  <body style="font-family:arial,helvetica,clean,sans-serif;line-height:1.385;">
-    <tal:block content="structure provider:groupserver.WeeklyTopicsDigestHtmlVM">
-      Content of the weekly topics digest in html.
-    </tal:block>
+  <body style="font-family:arial,helvetica,clean,sans-serif;line-height:1.385;"
+        tal:content="structure provider:groupserver.WeeklyTopicsDigestHtmlVM">
+    Content of the weekly topics digest in html.
   </body>
 </html>
