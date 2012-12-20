@@ -179,8 +179,8 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
 
         if self.__weeklyDigestQuery__ is None:
             self.__weeklyDigestQuery__ = \
-                self.messageQuery.recent_non_sitcky_topics(self.siteInfo.id,
-                                        self.groupInfo.id, limit=7, offset=0)
+                self.messageQuery.recent(self.siteInfo.id, self.groupInfo.id,
+                                            limit=7, offset=0)
 
         retval = self.__weeklyDigestQuery__
         assert type(retval) == list

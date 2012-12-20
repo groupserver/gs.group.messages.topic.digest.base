@@ -81,6 +81,27 @@ class DigestQuery(TopicsQuery):
     def __init__(self):
         super(DigestQuery, self).__init__()
 
+    def recent(self, siteId, groupId, limit=12, offset=0):
+        tt = self.topicTable
+        tkt = self.topicKeywordsTable
+        # SELECT topic.topic_id from topic
+        #   WHERE topic.topic_id = post.topic_id
+        #     AND topic.site_id = siteId
+        #     AND topic.group_id = groupId
+        #   ORDER_BY DESC(topic.last_post_date)
+        #   LIMIT = limit
+        #   OFFSET = offset;
+        s = sa.select(self.cols, order_by=sa.desc(tt.c.last_post_date),
+                            limit=limit, offset=offset)
+        self.add_standard_where_clauses(s, siteId, groupId, False)
+        s.append_whereclause(tt.c.topic_id == tkt.c.topic_id)
+
+        session = getSession()
+        r = session.execute(s)
+        retval = [self.marshal_topic_info(x) for x in r]
+        assert type(retval) == list
+        return retval
+
     def topics_sinse_yesterday(self, siteId, groupId):
         tt = self.topicTable
         tkt = self.topicKeywordsTable
