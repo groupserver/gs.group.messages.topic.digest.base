@@ -1,73 +1,51 @@
 # coding=utf-8
-from zope.component import getMultiAdapter
+'''The classes used with the page templates'''
 from zope.cachedescriptors.property import Lazy
 from gs.group.base.page import GroupPage
 from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
-
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
 
-# Classes used with page templates
-
 
 class TopicsDigestMessage(GroupPage):
-    pass
-
-
-class TopicsDigestMessageText(TopicsDigestMessage):
     def __init__(self, context, request):
-        TopicsDigestMessage.__init__(self, context, request)
-        response = request.response
-        response.setHeader("Content-Type", "text/plain; charset=UTF-8")
+        super(TopicsDigestMessage, self).__init__(context, request)
 
-
-class DynamicTopicsDigestMixin(object):
-
-    @Lazy
-    def dailyTemplate(self):
-        retval = getMultiAdapter((self.context, self.request),
-                                    name=self.dailyTemplateName)
-        assert retval
-        return retval
-
-    @Lazy
-    def weeklyTemplate(self):
-        retval = getMultiAdapter((self.context, self.request),
-                                    name=self.weeklyTemplateName)
-        assert retval
-        return retval
+    @property
+    def digest(self):
+        raise NotImplementedError
 
     def __call__(self, topicsDigest=None):
-        self.topicsDigest = topicsDigest if topicsDigest is not None \
-                else DailyTopicsDigest(self.context, self.siteInfo)
-        if isinstance(self.topicsDigest, DailyTopicsDigest):
-            if self.topicsDigest.post_stats['new_posts'] > 0:
-                self.output = \
-                    self.dailyTemplate(topicsDigest=self.topicsDigest)
-            else:
-                self.topicsDigest = \
-                    WeeklyTopicsDigest(self.context, self.siteInfo)
-
-        if isinstance(self.topicsDigest, WeeklyTopicsDigest):
-            self.output = self.weeklyTemplate(topicsDigest=self.topicsDigest)
-
-        retval = self.output
+        digest = self.digest if topicsDigest is None else topicsDigest
+        retval = super(TopicsDigestMessage, self).__call__(topicsDigest=digest)
         return retval
 
 
-class DynamicTopicsDigestMessage(TopicsDigestMessage,
-                                    DynamicTopicsDigestMixin):
-    dailyTemplateName = 'gs-group-messages-topicsdigest-daily.html'
-    weeklyTemplateName = 'gs-group-messages-topicsdigest-weekly.html'
-
-    def __init__(self, context, request):
-        TopicsDigestMessage.__init__(self, context, request)
+class WeeklyMessage(TopicsDigestMessage):
+    @Lazy
+    def digest(self):
+        retval = WeeklyTopicsDigest(self.context, self.siteInfo)
+        return retval
 
 
-class DynamicTopicsDigestMessageText(TopicsDigestMessageText,
-                                        DynamicTopicsDigestMixin):
-    dailyTemplateName = 'gs-group-messages-topicsdigest-daily.txt'
-    weeklyTemplateName = 'gs-group-messages-topicsdigest-weekly.txt'
+class WeeklyMessageText(WeeklyMessage):
+    def __call__(self, topicsDigest=None):
+        retval = super(WeeklyMessageText, self).__call__(topicsDigest)
+        self.request.response.setHeader("Content-Type",
+                                        "text/plain; charset=UTF-8")
+        return retval
 
-    def __init__(self, context, request, topicsDigest=None):
-        TopicsDigestMessage.__init__(self, context, request)
+
+class DailyMessage(TopicsDigestMessage):
+    @Lazy
+    def digest(self):
+        retval = DailyTopicsDigest(self.context, self.siteInfo)
+        return retval
+
+
+class DailyMessageText(DailyMessage):
+    def __call__(self, topicsDigest=None):
+        retval = super(DailyMessageText, self).__call__(topicsDigest)
+        self.request.response.setHeader("Content-Type",
+                                        "text/plain; charset=UTF-8")
+        return retval
