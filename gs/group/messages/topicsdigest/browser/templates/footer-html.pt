@@ -1,14 +1,34 @@
-<tal:block 
-    define="siteName options/siteName | view/siteInfo/name | string: No Site Name;
-            groupName options/groupName | view/groupInfo/name | string: No Group Name;
-            groupUrl options/groupUrl | view/groupInfo/url | string: No Group URL;
-            groupEmail options/groupEmail | view/groupEmail | string: No Group Email">
-<hr/>
-<p>To post a message, photo, file, or video to <tal:block replace="groupName"/>, log in at <a href='' tal:attributes="href groupUrl"><tal:block replace="groupUrl"/></a></p>
-
-<p>To receive an email of every post to <tal:block replace="groupName"/>, email <a href='' tal:attributes="href python:'mailto:{0}?Subject=digest%20off'.format(groupEmail)"><tal:block replace="groupEmail"/></a> with the subject line 'digest off'.</p>
-  
-<p>To leave <tal:block replace="groupName"/>, email <a href='' tal:attributes="href python:'mailto:%s?Subject=unsubscribe' % groupEmail "><tal:block replace="groupEmail"/></a> with the subject line 'unsubscribe'.</p>
-
-<p><tal:block replace="groupName"/> is hosted by <tal:block replace="siteName"/> using GroupServer and powered by OnlineGroups.Net</p>
-</tal:block>
+<div style="border-top:medium solid #666666;"
+  tal:define="siteName options/siteName | view/siteInfo/name | string: No Site Name;
+              groupName options/groupName | view/groupInfo/name | string: No Group Name;
+              groupUrl options/groupUrl | view/groupInfo/url | string: No Group URL;
+              groupEmail options/groupEmail | view/groupEmail | string: No Group Email">
+  <p style="margin:1.385em 0;">
+    Your received this email because you are a member of 
+    <span tal:content="view/groupInfo/name">this group</span> and you are 
+    set to receive a regular <em>digest</em> of topics, that summarises the
+    activity in the group.
+  </p>
+  <p style="margin:1.385em 0;">
+    <strong>Leave?</strong>
+    <a tal:attributes="href string:mailto:${groupEmail}?Subject=unsubscribe"
+       href='#' style="color:black;">Email 
+      <code tal:content="groupEmail">this@address</code></a> 
+    with the subject line <code>unsubscribe</code>.
+  </p>
+  <p style="margin:1.385em 0;">
+    <strong>More email?</strong>
+    <a tal:attributes="href string:mailto:${groupEmail}?Subject=digest%20off" 
+       style="color:black;" href="#">Email 
+      <code tal:content="groupEmail">this@email</code></a> 
+    with the subject line <code>digest off</code>
+    to receive an email every time a member posts. 
+  </p>
+  <p style="margin:1.385em 0;" tal:define="e view/siteInfo/get_support_email">
+    <strong>Help!</strong>
+    <a tal:attributes="href string:mailto:${e}?Subject=Digest%20Issue"
+       style="color:black;" href="#">Email
+      <code tal:content="e">this@email</code></a>
+      if you have any problems.
+  </p>
+</div>
