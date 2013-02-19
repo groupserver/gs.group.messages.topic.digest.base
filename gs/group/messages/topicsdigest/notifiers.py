@@ -36,7 +36,7 @@ class DynamicTopicsDigestNotifier(object):
         return retval
 
     @Lazy
-    def senderQuery(self):
+    def sendQuery(self):
         retval = SendQuery()
         return retval
 
