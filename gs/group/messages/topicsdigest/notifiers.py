@@ -43,7 +43,7 @@ class DynamicTopicsDigestNotifier(object):
     @Lazy
     def daily(self):
         'Returns True if we should send a daily digest'
-        retval = not self.sendQuery.has_digest_since(self.siteInfo.id,
+        retval = self.sendQuery.has_digest_since(self.siteInfo.id,
                                                     self.groupInfo.id)
         return retval
 
