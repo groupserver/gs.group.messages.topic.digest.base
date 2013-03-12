@@ -197,7 +197,6 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
             time_since_last_post = datetime.now(pytz.UTC) - \
                                     self.topics[0]['last_post_date']
                                                 
-        log.info("Days since last post: %d" % time_since_last_post.days)
         retval = ((self.post_stats['existing_topics'] != 0) and
                   (time_since_last_post.days != 0) and
                   (time_since_last_post.days % self.frequency == 0))
