@@ -110,7 +110,7 @@ class DynamicTopicsDigestNotifier(object):
         will not be created and sent. If a digest is created and sent, the log
         will be updated to reflect when the digest emails were sent.
         """
-        if (not self.digest_sent_today) and self.topicsDigest.show_digest):
+        if (not self.digest_sent_today) and self.topicsDigest.show_digest:
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
             message = Message(self.group)
