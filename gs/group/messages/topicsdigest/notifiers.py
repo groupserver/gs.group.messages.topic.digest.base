@@ -41,6 +41,12 @@ class DynamicTopicsDigestNotifier(object):
         return retval
 
     @Lazy
+    def daily(self):
+        '''Returns True if the topics digest is a daily digest'''
+        retval = isinstance(self.topicsDigest, DailyTopicsDigest)
+        return retval
+
+    @Lazy
     def digest_sent_today(self):
         'Returns True if we have sent a daily digest today'
         retval = self.sendQuery.has_digest_since(self.siteInfo.id,
