@@ -1,5 +1,5 @@
 # coding=utf-8
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
@@ -174,6 +174,7 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
         self.__weeklyDigestQuery__ = None
         self.__last_author_key__ = 'last_post_user_id'
         self.__subject_key__ = 'subject'
+        self.frequency = 7
 
     def __getTopics__(self):
 
@@ -191,10 +192,13 @@ class WeeklyTopicsDigest(BaseTopicsDigest):
         """ True if there are posts in the group, the most recent post is
             not from today, and today is the weekly anniversary of the most
             recent post in the group."""
+        time_since_last_post = timedelta(0)
+        if self.post_stats['existing_topics'] != 0:
+            time_since_last_post = datetime.now(pytz.UTC) - \
+                                    self.topics[0]['last_post_date']
+                                                
         retval = ((self.post_stats['existing_topics'] != 0) and
-                  (self.topics[0]['last_post_date'].strftime('%Y%j') !=
-                    datetime.now(pytz.UTC).strftime('%Y%j')) and
-                  (self.topics[0]['last_post_date'].strftime('%w') ==
-                    datetime.now(pytz.UTC).strftime('%w')))
+                  (time_since_last_post.days != 0) and
+                  (time_since_last_post.days % self.frequency == 0))
         assert type(retval) == bool
         return retval

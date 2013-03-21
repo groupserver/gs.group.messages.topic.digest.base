@@ -36,13 +36,19 @@ class DynamicTopicsDigestNotifier(object):
         return retval
 
     @Lazy
-    def senderQuery(self):
+    def sendQuery(self):
         retval = SendQuery()
         return retval
 
     @Lazy
     def daily(self):
-        'Returns True if we should send a daily digest'
+        '''Returns True if the topics digest is a daily digest'''
+        retval = isinstance(self.topicsDigest, DailyTopicsDigest)
+        return retval
+
+    @Lazy
+    def digest_sent_today(self):
+        'Returns True if we have sent a daily digest today'
         retval = self.sendQuery.has_digest_since(self.siteInfo.id,
                                                     self.groupInfo.id)
         return retval
@@ -110,8 +116,7 @@ class DynamicTopicsDigestNotifier(object):
         will not be created and sent. If a digest is created and sent, the log
         will be updated to reflect when the digest emails were sent.
         """
-        if (self.daily
-            or ((not self.daily) and self.topicsDigest.show_digest)):
+        if (not self.digest_sent_today) and self.topicsDigest.show_digest:
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
             message = Message(self.group)
