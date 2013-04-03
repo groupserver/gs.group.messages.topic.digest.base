@@ -123,6 +123,10 @@ class DigestQuery(TopicsQuery):
                          sa.and_(pt.c.date >= yesterday,
                          pt.c.topic_id == tt.c.topic_id)
                          ).as_scalar().label('num_posts_day'),
+        #  (SELECT post.user_id 
+        #    FROM post
+        #    WHERE post.post_id = topic.last_post_id)
+        #  AS last_author_id 
                sa.select([pt.c.user_id],
                          pt.c.post_id == tt.c.last_post_id
                          ).as_scalar().label('last_author_id'))
