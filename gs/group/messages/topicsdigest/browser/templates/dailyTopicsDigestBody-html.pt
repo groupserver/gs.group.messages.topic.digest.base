@@ -32,7 +32,7 @@
       repeat="topic options/topicsDigest/topics | view/topicsDigest/topics | python:[]">
       <li class="hentry" 
           style="margin:0.695em 0;padding:0.695em 0;border-bottom:thin solid #dddddd;width:49.154em;">
-        <a  href="#" style="font-size:138.5%;font-weight:bold;color:black;line-height:1em;display:block;"
+        <a  href="#" style="font-weight:bold;color:black;display:block;"
             tal:attributes="href topic/topic_url"
             tal:content="topic/topic_subject">Topic Subject</a>
         <ul style="list-style-type:none;padding:0.695em 0 0 0;">
