@@ -1,10 +1,10 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
 from gs.auth.token import log_auth_error
 from interfaces import ISendAllDigests
-from notifiers import DynamicTopicsDigestNotifier
+from notifiers import DynamicTopicsDigestNotifier, NoSuchListError
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
@@ -58,7 +58,11 @@ class SendAllDigests(SiteForm):
         for site in self.sites:
             for group in self.groups_for_site(site):
                 tdn = DynamicTopicsDigestNotifier(group, self.request)
-                tdn.notify()
+                try:
+                    tdn.notify()
+                except NoSuchListError as nsle:
+                    # The Group esits but there is no coresponding mailing list
+                    log.warn(nsle)
 
         log.info('All digests sent')
         self.status = u'<p>All digests sent.</p>'

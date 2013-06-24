@@ -1,14 +1,17 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from zope.component import createObject, getMultiAdapter
 from zope.cachedescriptors.property import Lazy
 from gs.email import send_email
 from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 from message import Message
 from queries import SendQuery
-UTF8 = 'utf-8'
-
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiers')
+UTF8 = 'utf-8'
+
+
+class NoSuchListError(AttributeError):
+    pass
 
 
 class DynamicTopicsDigestNotifier(object):
@@ -89,7 +92,14 @@ class DynamicTopicsDigestNotifier(object):
     @Lazy
     def digestMemberAddresses(self):
         '''Those group members who are subscribed via digest.'''
-        mListInfo = createObject('groupserver.MailingListInfo', self.group)
+        try:
+            mListInfo = createObject('groupserver.MailingListInfo', self.group)
+        except AttributeError:
+            # Turn the generic AttributeError to the more specific
+            # NoSuchListError.
+            # TODO: Move the error class and this code to the mailing list
+            m = 'No such list "{0}"'.format(self.group.getId())
+            raise NoSuchListError(m)
         mlist = mListInfo .mlist
         rawList = mlist.getValueFor('digestmaillist') or []
 
