@@ -137,7 +137,12 @@ class DynamicTopicsDigestNotifier(object):
             self.sendQuery.update_group_digest(self.siteInfo.id,
                                                 self.groupInfo.id)
 
-            m = 'Sent digest from {0} on {1} to {2} address.'
-            msg = m.format(self.groupInfo.id, self.siteInfo.id,
-                            len(self.digestMemberAddresses))
+            m = 'Sent digest of length {0} with {1} topics and {2} posts ' + \
+                'from {3} on {4} to {5} address.'
+            post_stats = self.topicsDigest.post_stats
+            total_topics = post_stats['new_topics'] + \
+                            post_stats['existing_topics']
+            msg = m.format(len(messageString), total_topics,
+                            post_stats['new_posts'], self.groupInfo.id, 
+                            self.siteInfo.id, len(self.digestMemberAddresses))
             log.info(msg)
