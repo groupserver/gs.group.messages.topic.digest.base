@@ -49,8 +49,8 @@ class SendAllDigests(SiteForm):
         gIds = groups.objectIds(FOLDER_TYPES)
         for gId in gIds:
             g = getattr(groups, gId)
-            if (g.getProperty('is_group', False)
-                and (not IGSClosedGroup.implementedBy(g))):
+            if (g.getProperty('is_group', False)):
+                # and (not IGSClosedGroup.implementedBy(g))): NOOOOOOOOOOOooooo
                 # FIXME: fix the closed-group  H A C K
                 yield g
 
