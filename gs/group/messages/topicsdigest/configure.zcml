@@ -73,7 +73,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestHeaderHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-html.pt"
@@ -83,7 +83,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestHeaderTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-txt.pt"
@@ -93,7 +93,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHeaderHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-html.pt"
@@ -103,7 +103,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHeaderTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-txt.pt"
@@ -114,7 +114,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
     class=".viewlets.DailyTopicsDigestViewlet"
     template="browser/templates/dailyTopicsDigestBody-html.pt"
@@ -124,7 +124,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     provides=".interfaces.IDailyTopicsDigestViewlet"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
     class=".viewlets.DailyTopicsDigestViewlet"
@@ -135,7 +135,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
     class=".viewlets.WeeklyTopicsDigestViewlet"
@@ -146,7 +146,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     provides=".interfaces.IWeeklyTopicsDigestViewlet"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
     class=".viewlets.WeeklyTopicsDigestViewlet"
@@ -158,7 +158,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestFooterHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IDailyTopicsDigestHtmlVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-html.pt"
@@ -168,7 +168,7 @@
   <browser:viewlet
     name="groupserver.DailyTopicsDigestFooterTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IDailyTopicsDigestTxtVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-txt.pt"
@@ -178,7 +178,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestFooterHtmlViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IWeeklyTopicsDigestHtmlVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-html.pt"
@@ -188,7 +188,7 @@
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestFooterTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    permission="zope2.View"
+    permission="zope2.Public"
     manager=".interfaces.IWeeklyTopicsDigestTxtVM"
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-txt.pt"
