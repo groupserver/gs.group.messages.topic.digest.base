@@ -90,6 +90,12 @@ class DynamicTopicsDigestNotifier(object):
         return retval
 
     @Lazy
+    def message(self):
+        retval = Message(self.group)
+        assert retval
+        return retval
+
+    @Lazy
     def digestMemberAddresses(self):
         '''Those group members who are subscribed via digest.'''
         try:
@@ -130,7 +136,7 @@ class DynamicTopicsDigestNotifier(object):
             and self.topicsDigest.show_digest):
             text = self.textTemplate(topicsDigest=self.topicsDigest)
             html = self.htmlTemplate(topicsDigest=self.topicsDigest)
-            message = Message(self.group)
+            message = self.message
             messageString = message.create_message(self.subject, text, html)
             send_email(message.rawFromAddress, self.digestMemberAddresses,
                         messageString)
