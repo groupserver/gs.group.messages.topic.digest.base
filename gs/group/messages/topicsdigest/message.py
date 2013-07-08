@@ -57,9 +57,7 @@ class Message(object):
         assert retval
         return retval
 
-    def create_message(self, subject, txtMessage, htmlMessage):
-        # Stolen from gs.profile.notify.sender.MessageSender
-        container = MIMEMultipart('alternative')
+    def add_headers(self, container, subject):
         # Required headers
         container['Subject'] = self.h(subject)
         container['From'] = self.fromAddress
@@ -79,20 +77,27 @@ class Message(object):
             u = '<mailto:{0}?Subject=Unsubscribe>'.format(self.rawFromAddress)
             container['List-Unsubscribe'] = self.h(u)
 
-            a = '<{0}> (Archive of {1})'.format(self.groupInfo.url,
-                                            self.groupInfo.name.encode(utf8))
+            a = '<{0}> (Archive of {1})'\
+                .format(self.groupInfo.url, self.groupInfo.name.encode(utf8))
             container['List-Archive'] = self.h(a)
 
             helpS = '<{0}/help> (Help)'.format(self.siteInfo.url)
             container['List-Help'] = self.h(helpS)
 
             s = '<mailto:{0}> ({1} Support)'.format(
-                                            self.siteInfo.get_support_email(),
-                                            self.siteInfo.name.encode(utf8))
+                self.siteInfo.get_support_email(),
+                self.siteInfo.name.encode(utf8))
             container['List-Owner'] = self.h(s)
         except UnicodeDecodeError:
             # Sometimes data is just too messed up.
             pass
+
+        return container
+
+    def create_message(self, subject, txtMessage, htmlMessage):
+        # Stolen from gs.profile.notify.sender.MessageSender
+        container = MIMEMultipart('alternative')
+        container = self.add_headers(container, subject)
 
         # Construct the body
         txt = MIMEText(txtMessage.encode(utf8), 'plain', utf8)
