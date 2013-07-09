@@ -90,6 +90,7 @@ class Message(object):
             container['List-Owner'] = self.h(s)
         except UnicodeDecodeError:
             # FIXME: Sometimes data is just too messed up.
+            # http://farmdev.com/talks/unicode/
             pass
 
         return container
