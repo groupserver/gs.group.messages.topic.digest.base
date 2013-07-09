@@ -63,7 +63,7 @@ class Message(object):
         container['From'] = self.fromAddress
         container['To'] = self.toAddress
         # Nice-to-have headers
-        container['Precedence'] = self.h('Bulk')
+        container['Precedence'] = 'Bulk'
         container['Organization'] = self.h(self.siteInfo.name)
         # User-Agent is not actually a real header, but Mozilla and MS use it.
         brag = 'GroupServer (gs.groups.messages.topicsdigest)'
@@ -89,7 +89,7 @@ class Message(object):
                 self.siteInfo.name.encode(utf8))
             container['List-Owner'] = self.h(s)
         except UnicodeDecodeError:
-            # Sometimes data is just too messed up.
+            # FIXME: Sometimes data is just too messed up.
             pass
 
         return container
