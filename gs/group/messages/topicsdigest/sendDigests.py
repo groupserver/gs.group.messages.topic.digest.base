@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from zope.component import getMultiAdapter
+from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
@@ -58,8 +59,13 @@ class SendAllDigests(SiteForm):
 
         for site in self.sites:
             for group in self.groups_for_site(site):
-                tdn = getMultiAdapter((group, self.request),
-                                        ITopicsDigestNotifier)
+                try:
+                    tdn = getMultiAdapter((group, self.request),
+                                            ITopicsDigestNotifier)
+                except ComponentLookupError:
+                    m = u'Ignoring the group with the odd interface: {0} on {1}'
+                    log.warn(m.format(site.getId(), group.getId()))
+
                 try:
                     tdn.notify()
                 except NoSuchListError as nsle:
