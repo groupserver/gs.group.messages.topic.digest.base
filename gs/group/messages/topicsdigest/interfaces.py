@@ -27,3 +27,9 @@ class ISendAllDigests(Interface):
     token = AuthToken(title=u'Token',
                       description=u'The authentication token',
                       required=True)
+
+
+class ITopicsDigestNotifier(Interface):
+
+    def notify():
+        'Send out the topic digest to the group'

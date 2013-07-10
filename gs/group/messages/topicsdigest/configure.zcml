@@ -201,5 +201,11 @@
     for="Products.GSContent.interfaces.IGSSiteFolder"
     class=".sendDigests.SendAllDigests"
     permission="zope2.Public"/>
-</configure>
 
+  <adapter
+    for="gs.group.base.interfaces.IGSGroupMarker 
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides=".interfaces.ITopicsDigestNotifier"
+    factory=".notifiers.DynamicTopicsDigestNotifier" />
+
+</configure>

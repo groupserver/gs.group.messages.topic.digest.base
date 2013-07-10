@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+from zope.component import getMultiAdapter
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.form import SiteForm
 from gs.auth.token import log_auth_error
-from gs.group.type.closed.interfaces import IGSClosedGroup  # FIXME: H A C K
-from interfaces import ISendAllDigests
-from notifiers import DynamicTopicsDigestNotifier, NoSuchListError
+from interfaces import ISendAllDigests, ITopicsDigestNotifier
+from notifiers import NoSuchListError
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
@@ -50,8 +50,6 @@ class SendAllDigests(SiteForm):
         for gId in gIds:
             g = getattr(groups, gId)
             if (g.getProperty('is_group', False)):
-                # and (not IGSClosedGroup.implementedBy(g))): NOOOOOOOOOOOooooo
-                # FIXME: fix the closed-group  H A C K
                 yield g
 
     @form.action(label=u'Send', failure='handle_send_all_digests_failure')
@@ -60,12 +58,8 @@ class SendAllDigests(SiteForm):
 
         for site in self.sites:
             for group in self.groups_for_site(site):
-                # TODO: Make DynamicTopicsDigestNotifier a multi-adaptor.
-                #       This will allow different group types (such as closed
-                #       groups) behave quite differently, and allow the H A C K
-                #       to be removed by calling
-                #       tdn = ITopicsDigestNotifier(group, self.request)
-                tdn = DynamicTopicsDigestNotifier(group, self.request)
+                tdn = getMultiAdapter((group, self.request),
+                                        ITopicsDigestNotifier)
                 try:
                     tdn.notify()
                 except NoSuchListError as nsle:
