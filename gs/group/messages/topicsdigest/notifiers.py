@@ -149,6 +149,6 @@ class DynamicTopicsDigestNotifier(object):
             total_topics = post_stats['new_topics'] + \
                             post_stats['existing_topics']
             msg = m.format(len(messageString), total_topics,
-                            post_stats['new_posts'], self.groupInfo.id, 
+                            post_stats['new_posts'], self.groupInfo.id,
                             self.siteInfo.id, len(self.digestMemberAddresses))
             log.info(msg)
