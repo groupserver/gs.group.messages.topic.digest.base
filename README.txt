@@ -48,6 +48,16 @@ It passes the text and the HTML form of the digest to the
 email-message. This message is then sent to the group members using
 ``gs.email.send_email`` [#send_email]_.
 
+Specific group-types override the notifier by providing a different
+adaptor. Closed groups, for example, provide a notifier that does nothing
+when ``notify`` is called::
+
+  <adapter
+    for="gs.group.type.closed.interfaces.IGSClosedGroup
+         zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="gs.group.messages.topicsdigest.interfaces.ITopicsDigestNotifier"
+    factory="gs.group.type.closed.digest.ClosedGroupDigestNotifier" />
+
 
 Digest Pages
 ============
