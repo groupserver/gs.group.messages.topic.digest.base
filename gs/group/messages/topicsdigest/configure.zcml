@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<configure xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:five="http://namespaces.zope.org/five">
+<!-- Copyright © 2013 E-Democracy.org and Contributors. -->
+<!-- All Rights Reserved. -->
 
-  <!-- topicsDigestBody-html.pt and topicsDigestBody-txt.pt do 
+<!-- This software is subject to the provisions of the Zope Public -->
+<!-- License, Version 2.1 (ZPL).  A copy of the ZPL should accompany this -->
+<!-- distribution. -->
+
+<!-- THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED -->
+<!-- WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED -->
+<!-- WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND -->
+<!-- FITNESS FOR A PARTICULAR PURPOSE. -->
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="zope.viewlet" file="meta.zcml" />
+
+  <!-- topicsDigestBody-html.pt and topicsDigestBody-txt.pt do
        all of the controlling of the look of digest bodies.-->
 
   <!-- Topic digest message pages, in HTML and plain-text  -->
@@ -67,7 +79,7 @@
     provides=".interfaces.IWeeklyTopicsDigestTxtVM"
     class="gs.viewlet.manager.WeightOrderedViewletManager"
     template="browser/templates/topicsDigestVM.pt"/>
-  
+
   <!-- ###Viewlets### -->
   <!-- Header Viewlets -->
   <browser:viewlet
@@ -88,7 +100,7 @@
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/header-txt.pt"
     weight="10"
-    title="Daily Digest Header in Text"/> 
+    title="Daily Digest Header in Text"/>
 
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHeaderHtmlViewlet"
@@ -99,7 +111,7 @@
     template="browser/templates/header-html.pt"
     weight="10"
     title="Weekly Digest Header in HTML"/>
-    
+
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestHeaderTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
@@ -142,7 +154,7 @@
     template="browser/templates/weeklyTopicsDigestBody-html.pt"
     weight="20"
     title="Weekly Topics Digest"/>
-   
+
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
@@ -173,7 +185,7 @@
     class=".viewlets.HeaderFooterViewlet"
     template="browser/templates/footer-txt.pt"
     weight="30"
-    title="Daily Digest Footer in Text"/> 
+    title="Daily Digest Footer in Text"/>
 
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestFooterHtmlViewlet"
@@ -184,7 +196,7 @@
     template="browser/templates/footer-html.pt"
     weight="30"
     title="Weekly Digest Footer in HTML"/>
-    
+
   <browser:viewlet
     name="groupserver.WeeklyTopicsDigestFooterTxtViewlet"
     for="gs.group.base.interfaces.IGSGroupMarker"
@@ -203,7 +215,7 @@
     permission="zope2.Public"/>
 
   <adapter
-    for="gs.group.base.interfaces.IGSGroupMarker 
+    for="gs.group.base.interfaces.IGSGroupMarker
          zope.publisher.interfaces.browser.IBrowserRequest"
     provides=".interfaces.ITopicsDigestNotifier"
     factory=".notifiers.DynamicTopicsDigestNotifier" />
