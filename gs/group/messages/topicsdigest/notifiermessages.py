@@ -1,10 +1,24 @@
-# coding=utf-8
-'''The classes used with the page templates'''
-from zope.cachedescriptors.property import Lazy
-from gs.group.base.page import GroupPage
-from topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
+from zope.cachedescriptors.property import Lazy
+from gs.core import to_ascii
+from gs.group.base.page import GroupPage
+from .topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 
 
 class TopicsDigestMessage(GroupPage):
@@ -31,8 +45,8 @@ class WeeklyMessage(TopicsDigestMessage):
 class WeeklyMessageText(WeeklyMessage):
     def __call__(self, topicsDigest=None):
         retval = super(WeeklyMessageText, self).__call__(topicsDigest)
-        self.request.response.setHeader("Content-Type",
-                                        "text/plain; charset=UTF-8")
+        self.request.response.setHeader(to_ascii("Content-Type"),
+                                        to_ascii("text/plain; charset=UTF-8"))
         return retval
 
 
@@ -46,6 +60,6 @@ class DailyMessage(TopicsDigestMessage):
 class DailyMessageText(DailyMessage):
     def __call__(self, topicsDigest=None):
         retval = super(DailyMessageText, self).__call__(topicsDigest)
-        self.request.response.setHeader("Content-Type",
-                                        "text/plain; charset=UTF-8")
+        self.request.response.setHeader(to_ascii("Content-Type"),
+                                        to_ascii("text/plain; charset=UTF-8"))
         return retval
