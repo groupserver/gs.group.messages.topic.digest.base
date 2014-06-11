@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from zope.component import getMultiAdapter
 from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from gs.content.form.form import SiteForm
+from gs.content.form.base import SiteForm
 from gs.auth.token import log_auth_error
-from interfaces import ISendAllDigests, ITopicsDigestNotifier
-from notifiers import NoSuchListError
+from .interfaces import ISendAllDigests, ITopicsDigestNotifier
+from .notifiers import NoSuchListError
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
