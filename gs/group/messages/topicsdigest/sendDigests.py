@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 from zope.component import getMultiAdapter
 from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
@@ -15,7 +15,7 @@ FOLDER_TYPES = ['Folder', 'Folder (Ordered)']
 
 
 class SendAllDigests(SiteForm):
-    label = u'Send Digests for All Groups on the Site'
+    label = 'Send Digests for All Groups on the Site'
     pageTemplateFileName = 'browser/templates/send_all_digests.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
     form_fields = form.Fields(ISendAllDigests, render_context=False)
@@ -54,7 +54,7 @@ class SendAllDigests(SiteForm):
             if (g.getProperty('is_group', False)):
                 yield g
 
-    @form.action(label=u'Send', failure='handle_send_all_digests_failure')
+    @form.action(label='Send', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
         log.info('Processing the digests')
 
@@ -64,7 +64,7 @@ class SendAllDigests(SiteForm):
                     tdn = getMultiAdapter((group, self.request),
                                             ITopicsDigestNotifier)
                 except ComponentLookupError:
-                    m = u'Ignoring the group with the odd interface: {0} on {1}'
+                    m = 'Ignoring the group with the odd interface: {0} on {1}'
                     log.warn(m.format(site.getId(), group.getId()))
 
                 try:
@@ -74,11 +74,9 @@ class SendAllDigests(SiteForm):
                     log.warn(nsle)
 
         log.info('All digests sent')
-        self.status = u'<p>All digests sent.</p>'
+        self.status = '<p>All digests sent.</p>'
 
     def handle_send_all_digests_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)
         if len(errors) == 1:
-            self.status = u'<p>There is an error:</p>'
-
-        assert type(self.status) == unicode
+            self.status = '<p>There is an error:</p>'
