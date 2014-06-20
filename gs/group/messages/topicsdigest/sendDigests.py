@@ -57,7 +57,10 @@ class SendAllDigests(SiteForm):
     @form.action(label='Send', failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
         log.info('Processing the digests')
-
+        # FIXME: iterate through just the groups that need to have a digest
+        # We do not need to iterate through all of the sites and all the
+        # groups: a query on the email-settings table will get us the groups
+        # we need to concern ourselves with.
         for site in self.sites:
             for group in self.groups_for_site(site):
                 try:
