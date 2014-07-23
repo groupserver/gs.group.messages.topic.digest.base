@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2013 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
@@ -31,7 +31,8 @@ class TopicsDigestMessage(GroupPage):
 
     def __call__(self, topicsDigest=None):
         digest = self.digest if topicsDigest is None else topicsDigest
-        retval = super(TopicsDigestMessage, self).__call__(topicsDigest=digest)
+        s = super(TopicsDigestMessage, self)
+        retval = s.__call__(topicsDigest=digest)
         return retval
 
 
@@ -45,8 +46,8 @@ class WeeklyMessage(TopicsDigestMessage):
 class WeeklyMessageText(WeeklyMessage):
     def __call__(self, topicsDigest=None):
         retval = super(WeeklyMessageText, self).__call__(topicsDigest)
-        self.request.response.setHeader(to_ascii("Content-Type"),
-                                        to_ascii("text/plain; charset=UTF-8"))
+        c = to_ascii("text/plain; charset=UTF-8")
+        self.request.response.setHeader(to_ascii("Content-Type"), c)
         return retval
 
 
@@ -60,6 +61,6 @@ class DailyMessage(TopicsDigestMessage):
 class DailyMessageText(DailyMessage):
     def __call__(self, topicsDigest=None):
         retval = super(DailyMessageText, self).__call__(topicsDigest)
-        self.request.response.setHeader(to_ascii("Content-Type"),
-                                        to_ascii("text/plain; charset=UTF-8"))
+        c = to_ascii("text/plain; charset=UTF-8")
+        self.request.response.setHeader(to_ascii("Content-Type"), c)
         return retval

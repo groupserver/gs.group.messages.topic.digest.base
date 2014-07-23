@@ -65,15 +65,17 @@ class SendAllDigests(SiteForm):
             for group in self.groups_for_site(site):
                 try:
                     tdn = getMultiAdapter((group, self.request),
-                                            ITopicsDigestNotifier)
+                                          ITopicsDigestNotifier)
                 except ComponentLookupError:
-                    m = 'Ignoring the group with the odd interface: {0} on {1}'
+                    m = 'Ignoring the group with the odd interface: {0} '\
+                        'on {1}'
                     log.warn(m.format(site.getId(), group.getId()))
 
                 try:
                     tdn.notify()
                 except NoSuchListError as nsle:
-                    # The Group esits but there is no coresponding mailing list
+                    # The Group esits but there is no coresponding mailing
+                    # list
                     log.warn(nsle)
 
         log.info('All digests sent')
