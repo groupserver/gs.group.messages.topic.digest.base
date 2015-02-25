@@ -1,6 +1,14 @@
 Changelog
 =========
 
+3.0.0 (2015-02-24)
+------------------
+
+* Renaming the product `gs.group.messages.topic.digest.base`_
+
+.. _gs.group.messages.topic.digest.base:
+   https://github.com/groupserver/gs.group.messages.topic.digest.base
+
 2.3.2 (2014-06-04)
 ------------------
 
@@ -49,3 +57,5 @@ Changelog
 ------------------
 
 * Initial version.
+
+..  LocalWords:  Changelog

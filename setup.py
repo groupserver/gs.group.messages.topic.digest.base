@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2012, 2013, 2014 E-Democracy.org and Contributors.
+# Copyright © 2012, 2013, 2014, 2015 E-Democracy.org and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -47,7 +47,7 @@ setup(name=name,
       keywords='groupserver, email, digest, topic, notification',
       author='Bill Bushey',
       author_email='wbushey@acm.org',
-      url='https://source.iopen.net/groupserver/{0}'.format(name),
+      url='https://github.com/groupserver/{0}'.format(name),
       license='ZPL 2.1',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['gs', 'gs.group', 'gs.group.messages',
