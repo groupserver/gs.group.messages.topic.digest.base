@@ -17,7 +17,7 @@ from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
 from zope.cachedescriptors.property import Lazy
 from gs.core import to_ascii
-from gs.group.base.page import GroupPage
+from gs.group.base import GroupPage
 from .topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 
 

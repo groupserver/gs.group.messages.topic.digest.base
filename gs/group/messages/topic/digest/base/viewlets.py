@@ -3,7 +3,7 @@ from gs.group.base import GroupViewlet
 from topicsDigest import BaseTopicsDigest, DailyTopicsDigest,\
     WeeklyTopicsDigest
 from logging import getLogger
-log = getLogger('gs.group.messages.topicsdigest')
+log = getLogger('gs.group.messages.topic.digest')
 
 
 class HeaderFooterViewlet(GroupViewlet):
