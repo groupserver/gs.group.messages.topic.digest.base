@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0.0 (2015-02-24)
+3.0.0 (2015-03-03)
 ------------------
 
 * Renaming the product `gs.group.messages.topic.digest.base`_
