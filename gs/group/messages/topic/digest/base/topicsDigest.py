@@ -13,13 +13,12 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
+from logging import getLogger
+log = getLogger('gs.group.messages.topic.digest.base.topicsdigest')
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from Products.XWFCore.XWFUtils import date_format_by_age, change_timezone
-from queries import DigestQuery
-
-from logging import getLogger
-log = getLogger('gs.group.messages.topicsdigest.topicsdigest')
+from .queries import DigestQuery
 
 
 class BaseTopicsDigest(object):

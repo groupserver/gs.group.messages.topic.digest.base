@@ -5,7 +5,7 @@ log = getLogger('gs.group.messages.topicsdigest.notifiers')
 from zope.component import createObject, getMultiAdapter
 from zope.cachedescriptors.property import Lazy
 from gs.email import send_email
-from .topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
+#from .topicsDigest import DailyTopicsDigest, WeeklyTopicsDigest
 from .message import Message
 from .queries import SendQuery
 UTF8 = 'utf-8'
@@ -23,9 +23,10 @@ class DynamicTopicsDigestNotifier(object):
 
     @Lazy
     def topicsDigest(self):
-        retval = DailyTopicsDigest(self.context, self.siteInfo)
-        if not retval.show_digest:
-            retval = WeeklyTopicsDigest(self.context, self.siteInfo)
+        # retval = DailyTopicsDigest(self.context, self.siteInfo)
+        retval = None
+        # if not retval.show_digest:
+            # retval = WeeklyTopicsDigest(self.context, self.siteInfo)
         return retval
 
     @Lazy
@@ -49,7 +50,8 @@ class DynamicTopicsDigestNotifier(object):
     @Lazy
     def daily(self):
         '''Returns True if the topics digest is a daily digest'''
-        retval = isinstance(self.topicsDigest, DailyTopicsDigest)
+        retval = False
+        # retval = isinstance(self.topicsDigest, DailyTopicsDigest)
         return retval
 
     @Lazy
