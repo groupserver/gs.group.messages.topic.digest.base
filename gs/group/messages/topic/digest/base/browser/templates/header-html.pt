@@ -1,5 +1,0 @@
-<div id="gs-group-messages-topicsdigest-header" 
-     style="background-color:#EEEEEE;border-bottom:medium solid #666666;;">
-  <h1 style="font-size:278%;font-weight:bold;margin:0;padding:0.689em 0 0.689em 0.689em;" 
-      tal:content="view/siteInfo/name">This Site</h1>
-</div>

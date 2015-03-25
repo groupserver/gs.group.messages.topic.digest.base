@@ -1,7 +1,20 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+############################################################################
+#
+# Copyright © 2013, 2015 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+############################################################################
+from __future__ import absolute_import, unicode_literals
 from gs.group.base import GroupViewlet
-from topicsDigest import BaseTopicsDigest, DailyTopicsDigest,\
-    WeeklyTopicsDigest
+from topicsDigest import BaseTopicsDigest
 from logging import getLogger
 log = getLogger('gs.group.messages.topic.digest')
 
@@ -11,11 +24,13 @@ class HeaderFooterViewlet(GroupViewlet):
 
     def __init__(self, context, request, view, manager):
         super(HeaderFooterViewlet, self).__init__(context, request, view,
-                                                    manager)
+                                                  manager)
 
-        config = getattr(self.context, 'GlobalConfiguration')
-        self.emailDomain = config.getProperty('emailDomain')
-        self.groupEmail = '%s@%s' % (self.groupInfo.get_id(), self.emailDomain)
+        config = getattr(self.context, b'GlobalConfiguration')
+        self.emailDomain = config.getProperty(b'emailDomain')
+        # --=mpj17=-- vvv Is this right? vvv
+        self.groupEmail = '%s@%s' % (self.groupInfo.get_id(),
+                                     self.emailDomain)
 
 
 class TopicsDigestViewlet(GroupViewlet):
@@ -24,8 +39,8 @@ class TopicsDigestViewlet(GroupViewlet):
 
     def __init__(self, context, request, view, manager):
         super(TopicsDigestViewlet, self).__init__(context, request, view,
-                                                    manager)
-        self.groupTz = self.groupInfo.get_property('group_tz', 'UTC')
+                                                  manager)
+        self.groupTz = self.groupInfo.get_property(b'group_tz', 'UTC')
 
     @property
     def topicsDigest(self):
@@ -34,21 +49,3 @@ class TopicsDigestViewlet(GroupViewlet):
         retval = self.__topicsDigest__
         assert isinstance(retval, BaseTopicsDigest)
         return retval
-
-
-class DailyTopicsDigestViewlet(TopicsDigestViewlet):
-    """ Viewlet used to pull data for daily topics digests. """
-
-    def __init__(self, context, request, view, manager):
-        super(DailyTopicsDigestViewlet, self).__init__(context, request, view,
-                                                        manager)
-        self.__topicsDigest__ = DailyTopicsDigest(self.context, self.siteInfo)
-
-
-class WeeklyTopicsDigestViewlet(TopicsDigestViewlet):
-    """ Viewlet used to pull data for weekly topics digests. """
-
-    def __init__(self, context, request, view, manager):
-        super(WeeklyTopicsDigestViewlet, self).__init__(context, request, view,
-                                                        manager)
-        self.__topicsDigest__ = WeeklyTopicsDigest(self.context, self.siteInfo)
