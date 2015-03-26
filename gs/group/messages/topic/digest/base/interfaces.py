@@ -14,13 +14,21 @@
 ############################################################################
 from __future__ import unicode_literals
 from zope.interface import Interface
-from zope.schema import Bool, Int, Text, TextLine
+from zope.schema import ASCIILine, Bool, Int, Text, TextLine
 from gs.auth.token import AuthToken
 
 
-class ISendAllDigests(Interface):
-    '''Declares the form that will be used to send digests for all of the
-    groups on the site. '''
+class ISendDigest(Interface):
+    '''Declares the form that will be used to send digest to a group on the
+site.'''
+
+    siteId = ASCIILine(
+        title='Site Identifier',
+        required=True)
+
+    groupId = ASCIILine(
+        title='Group Identifier',
+        required=True)
 
     token = AuthToken(
         title='Token',

@@ -122,7 +122,7 @@ to reflect when the digest emails were sent."""
             self.sendQuery.update_group_digest(self.siteInfo.id,
                                                self.groupInfo.id)
 
-            m = 'Sent digest of length {0} from {3} on {4} to {5} address.'
+            m = 'Sent digest of length {0} from {1} on {2} to {3} address.'
             msg = m.format(len(messageString), self.groupInfo.id,
                            self.siteInfo.id,
                            len(self.digestMemberAddresses))

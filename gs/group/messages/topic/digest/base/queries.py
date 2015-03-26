@@ -26,7 +26,7 @@ class SendQuery(object):
         self.now = datetime.datetime.now()
 
     def has_digest_since(self, site_id, group_id,
-                        interval=datetime.timedelta(0.9)):
+                         interval=datetime.timedelta(0.9)):
         """ Have there been any digests sent in the last 'interval' time
         period? (Default 21.6 hours)
 
@@ -50,7 +50,7 @@ class SendQuery(object):
         return result
 
     def no_digest_but_active(self, interval='7 days',
-                            active_interval='3 months'):
+                             active_interval='3 months'):
         """ Returns a list of dicts containing site_id and group_id
             which have not received a digest in the 'interval' time period.
 
@@ -59,9 +59,9 @@ class SendQuery(object):
   (SELECT site_id, group_id, max(sent_date) AS sent_date
      FROM group_digest GROUP BY site_id,group_id) AS latest_digest, topic
   WHERE topic.site_id = latest_digest.site_id
-    AND topic.group_id = latest_digest.group_id
-    AND latest_digest.sent_date < CURRENT_TIMESTAMP-interval :interval
-    AND topic.last_post_date > CURRENT_TIMESTAMP-interval :active_interval""")
+  AND topic.group_id = latest_digest.group_id
+  AND latest_digest.sent_date < CURRENT_TIMESTAMP-interval :interval
+  AND topic.last_post_date > CURRENT_TIMESTAMP-interval :active_interval""")
 
         session = getSession()
         d = {'interval': interval, 'active_interval': active_interval}
@@ -69,7 +69,7 @@ class SendQuery(object):
         retval = []
         if r.rowcount:
             retval = [{'site_id': x['site_id'],
-                        'group_id': x['group_id']} for x in r]
+                       'group_id': x['group_id']} for x in r]
         return retval
 
     def update_group_digest(self, site_id, group_id):
@@ -105,7 +105,7 @@ class DigestQuery(TopicsQuery):
         #   LIMIT = limit
         #   OFFSET = offset;
         s = sa.select(self.cols, order_by=sa.desc(tt.c.last_post_date),
-                            limit=limit, offset=offset)
+                      limit=limit, offset=offset)
         self.add_standard_where_clauses(s, siteId, groupId, False)
         s.append_whereclause(tt.c.topic_id == tkt.c.topic_id)
 
@@ -126,23 +126,23 @@ class DigestQuery(TopicsQuery):
         cols = (tt.c.topic_id, tt.c.site_id, tt.c.group_id,
                 tt.c.original_subject, tt.c.first_post_id,
                 tt.c.last_post_id, tt.c.num_posts, tt.c.last_post_date,
-                   tkt.c.keywords,
-        #  (SELECT COUNT(*)
-        #    FROM post
-        #    WHERE (post.topic_id = topic.topic_id)
-        #      AND post.date >= timestamp 'yesterday')
-        #  AS num_posts_day
-               sa.select([sa.func.count(pt.c.post_id)],
-                         sa.and_(pt.c.date >= yesterday,
-                         pt.c.topic_id == tt.c.topic_id)
-                         ).as_scalar().label('num_posts_day'),
-        #  (SELECT post.user_id
-        #    FROM post
-        #    WHERE post.post_id = topic.last_post_id)
-        #  AS last_author_id
-               sa.select([pt.c.user_id],
-                         pt.c.post_id == tt.c.last_post_id
-                         ).as_scalar().label('last_author_id'))
+                tkt.c.keywords,
+                #  (SELECT COUNT(*)
+                #    FROM post
+                #    WHERE (post.topic_id = topic.topic_id)
+                #      AND post.date >= timestamp 'yesterday')
+                #  AS num_posts_day
+                sa.select([sa.func.count(pt.c.post_id)],
+                          sa.and_(pt.c.date >= yesterday,
+                          pt.c.topic_id == tt.c.topic_id)
+                          ).as_scalar().label('num_posts_day'),
+                #  (SELECT post.user_id
+                #    FROM post
+                #    WHERE post.post_id = topic.last_post_id)
+                #  AS last_author_id
+                sa.select([pt.c.user_id],
+                          pt.c.post_id == tt.c.last_post_id
+                          ).as_scalar().label('last_author_id'))
         s = sa.select(cols, order_by=sa.desc(tt.c.last_post_date))
         #  FROM topic
         #  WHERE topic.site_id = 'main'

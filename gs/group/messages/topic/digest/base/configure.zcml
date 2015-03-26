@@ -16,7 +16,7 @@
 
   <!-- Send All Digests Form -->
   <browser:page
-    name="gs-group-messages-topicsdigest-send.html"
+    name="gs-group-messages-topic-digest-send.html"
     for="Products.GSContent.interfaces.IGSSiteFolder"
     class=".sendDigests.SendAllDigests"
     permission="zope2.Public"/>

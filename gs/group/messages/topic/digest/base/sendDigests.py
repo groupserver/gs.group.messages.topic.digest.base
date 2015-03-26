@@ -13,87 +13,64 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
+from logging import getLogger
+log = getLogger('gs.group.messages.topic.digest.base.send')
 from zope.component import getAdapters
 from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.base import SiteForm
 from gs.auth.token import log_auth_error
-from .interfaces import (ISendAllDigests, ITopicsDigestNotifier)
+from .interfaces import (ISendDigest, ITopicsDigestNotifier)
 from .notifier import (DigestNotifier, NoSuchListError)
-
-from logging import getLogger
-log = getLogger('gs.group.messages.topicsdigest.sendDigests')
 FOLDER_TYPES = ['Folder', 'Folder (Ordered)']
 
 
+class NoSuchSiteError(ValueError):
+    'The specified site does not exsit'
+
+
+class NoSuchGroupError(ValueError):
+    'The specified group does not exist'
+
+
 class SendAllDigests(SiteForm):
-    label = 'Send Digests for All Groups on the Site'
+    label = 'Send a digest to a group'
     pageTemplateFileName = 'browser/templates/send_all_digests.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
-    form_fields = form.Fields(ISendAllDigests, render_context=False)
+    form_fields = form.Fields(ISendDigest, render_context=False)
 
-    def setUpWidgets(self, ignore_request=False):
-        data = {'name': self.siteInfo.name, }
-        self.widgets = form.setUpWidgets(
-            self.form_fields, self.prefix, self.context,
-            self.request, form=self, data=data,
-            ignore_request=ignore_request)
+    def get_site(self, siteId):
+        '''Get a site
 
-    @property
-    def sites(self):
-        '''All sites in a GroupServer instance'''
-        # The digest sender sends digests for all groups the share the same
-        # GroupServer *INSTANCE* as the site we currently on. This iterator
-        # gets all the sites.
-        # TODO: Put in a generic place (gs.site.base?)
+:param str siteId: The site identifier
+:returns: The site object for the ID.
+:raises NoSuchSiteError: The specified site does not exist'''
         site_root = self.context.site_root()
         content = getattr(site_root, 'Content')
-        sIds = content.objectIds(FOLDER_TYPES)
-        for sId in sIds:
-            s = getattr(content, sId)
-            if s.getProperty('is_division', False) and hasattr(s, 'groups'):
-                yield s
+        retval = getattr(content, siteId, None)
+        if not(retval and retval.getProperty('is_division', False)
+               and hasattr(retval, 'groups')):
+            m = 'No site with the ID "{0}"'.format(siteId)
+            raise ValueError(m)
+        return retval
 
-    def groups_for_site(self, site):
-        '''An iterator for all groups on a site.'''
-        # --=mpj17=-- I am using an iterator so we do not load all the group
-        # instances into RAM in one hit. ('groupserver.GroupsInfo' needs to
-        # be fixed so it treads lightly on RAM.)
+    def get_group(self, siteId, groupId):
+        '''Get a group
+
+:param str siteId: The site identifier
+:param str groupId: The group identifier
+:returns: The group object on the site.
+:raises NoSuchGroupError: The group does not exist.
+:raises NoSuchSiteError: The specified site does not exist'''
+        site = self.get_site(siteId)
         groups = getattr(site, 'groups')
-        gIds = groups.objectIds(FOLDER_TYPES)
-        for gId in gIds:
-            g = getattr(groups, gId)
-            if (g.getProperty('is_group', False)):
-                yield g
-
-    @form.action(label='Send', failure='handle_send_all_digests_failure')
-    def handle_send_all_digests(self, action, data):
-        log.info('Processing the digests')
-        # FIXME: iterate through just the groups that need to have a digest
-        # We do not need to iterate through all of the sites and all the
-        # groups: a query on the email-settings table will get us the groups
-        # we need to concern ourselves with.
-        for site in self.sites:
-            for group in self.groups_for_site(site):
-                try:
-                    tdn = self.get_digest_adapter(group)
-                except ComponentLookupError:
-                    m = 'Ignoring the group with the odd interface: {0} '\
-                        'on {1}'
-                    log.warn(m.format(site.getId(), group.getId()))
-
-                if tdn:
-                    try:
-                        notifier = DigestNotifier(group, self.request)
-                        notifier.notify(tdn.subject, tdn.text, tdn.html)
-                    except NoSuchListError as nsle:
-                        # The Group esits but there is no coresponding
-                        # mailing list
-                        log.warn(nsle)
-
-        log.info('All digests sent')
-        self.status = '<p>All digests sent.</p>'
+        retval = getattr(groups, groupId, None)
+        if not(retval and retval.getProperty('is_group', False)):
+            m = 'No group with the ID "{0}" on the site "{1}"'
+            msg = m.format(groupId, siteId)
+            raise NoSuchGroupError(msg)
+        return retval
 
     def get_digest_adapter(self, group):
         '''Get the digest adaptor for a group
@@ -103,9 +80,51 @@ class SendAllDigests(SiteForm):
         adapters = [a[1] for a in getAdapters((group, self.request),
                                               ITopicsDigestNotifier)
                     if a[1].canSend]
-        adapters.sort(key=lambda a: a[1].weight)
+        adapters.sort(key=lambda a: a.weight)
         retval = adapters[0] if adapters else None
         return retval
+
+    @form.action(label='Send', name='send',
+                 failure='handle_send_all_digests_failure')
+    def handle_send_all_digests(self, action, data):
+        m = 'Processing the digests for "{0}" on "{1}"'
+        msg = m.format(data['siteId'], data['groupId'])
+        log.info(msg)
+
+        try:
+            group = self.get_group(data['siteId'], data['groupId'])
+        except NoSuchSiteError as nsse:
+            log.warn(nsse)
+            self.satus = '<p>No digest sent</p>'
+            return  # Sorry, Dijkstra
+        except NoSuchGroupError as nsge:
+            log.warn(nsge)
+            self.satus = '<p>No digest sent</p>'
+            return  # Sorry, Dijkstra
+
+        try:
+            tdn = self.get_digest_adapter(group)
+        except ComponentLookupError:
+            m = 'Ignoring the group with the odd interface: """'
+            log.warn(m.format(data['siteId'], data['groupId']))
+
+        if tdn:  # There may not be any digest for today
+            try:
+                notifier = DigestNotifier(group, self.request)
+                notifier.notify(tdn.subject, tdn.text, tdn.html)
+            except NoSuchListError as nsle:
+                # The Group exits but there is no coresponding mailing list
+                log.warn(nsle)
+            else:
+                m = 'Digests sent to "{0}" on "{1}"'
+                msg = m.format(data['siteId'], data['groupId'])
+                log.info(msg)
+        else:
+            m = 'No digests to send to "{0}" on "{1}"'
+            msg = m.format(data['siteId'], data['groupId'])
+            log.info(msg)
+        self.request.response.setHeader(b'Content-type', b'text/html')
+        self.status = '<p>All digests sent.</p>'
 
     def handle_send_all_digests_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)

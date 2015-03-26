@@ -10,7 +10,7 @@
     <tal:block metal:fill-slot="contextnavigation">&#160;</tal:block>
     <div id="gs-group-messages-topicsdigest-sendalldigests" metal:fill-slot="body">
       <form id="gs-group-messages-topicsdigest-sendalldigests-form" enctype="multipart/form-data" method="post" action="." tal:attributes="action request/URL" >
-        <h1 tal:content="view/label">Send All Digests</h1>
+        <h1 tal:content="view/label">Send digest</h1>
         <tal:block define="widgets view/widgets">
           <tal:block replace="structure provider:groupserver.FormWidgets"/>
         </tal:block>
@@ -24,4 +24,4 @@
       </form><!--gs-group-messages-topicsdigest-sendalldigests-form-->
     </div><!--gs-group-messages-topicsdigest-sendalldigests-->
   </body>
-</html> 
+</html>

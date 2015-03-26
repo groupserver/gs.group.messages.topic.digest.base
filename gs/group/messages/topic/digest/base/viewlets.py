@@ -16,7 +16,7 @@ from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 log = getLogger('gs.group.messages.topic.digest.base.vielets')
 from gs.group.base import GroupViewlet
-from .topicsDigest import BaseTopicsDigest
+from .topicsdigest import BaseTopicsDigest
 
 
 class HeaderFooterViewlet(GroupViewlet):
