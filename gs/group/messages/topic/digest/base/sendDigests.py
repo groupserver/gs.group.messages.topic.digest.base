@@ -13,14 +13,14 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-from zope.component import getMultiAdapter
+from zope.component import getAdapters
 from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from gs.content.form.base import SiteForm
 from gs.auth.token import log_auth_error
-from .interfaces import ISendAllDigests, ITopicsDigestNotifier
-from .notifiers import NoSuchListError
+from .interfaces import (ISendAllDigests, ITopicsDigestNotifier)
+from .notifier import (DigestNotifier, NoSuchListError)
 
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.sendDigests')
@@ -77,21 +77,20 @@ class SendAllDigests(SiteForm):
         for site in self.sites:
             for group in self.groups_for_site(site):
                 try:
-                    tdn = get_digest_adapter(group)
+                    tdn = self.get_digest_adapter(group)
                 except ComponentLookupError:
                     m = 'Ignoring the group with the odd interface: {0} '\
                         'on {1}'
                     log.warn(m.format(site.getId(), group.getId()))
 
-                if not tdn:
-                    continue  # --=mpj17=-- Sorry, Dijkstra
-
-                try:
-                    tdn.notify()
-                except NoSuchListError as nsle:
-                    # The Group esits but there is no coresponding mailing
-                    # list
-                    log.warn(nsle)
+                if tdn:
+                    try:
+                        notifier = DigestNotifier(group, self.request)
+                        notifier.notify(tdn.subject, tdn.text, tdn.html)
+                    except NoSuchListError as nsle:
+                        # The Group esits but there is no coresponding
+                        # mailing list
+                        log.warn(nsle)
 
         log.info('All digests sent')
         self.status = '<p>All digests sent.</p>'
