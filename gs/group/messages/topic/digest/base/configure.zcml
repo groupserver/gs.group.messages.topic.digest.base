@@ -21,10 +21,4 @@
     class=".sendDigests.SendAllDigests"
     permission="zope2.Public"/>
 
-  <adapter
-    for="gs.group.base.interfaces.IGSGroupMarker
-         zope.publisher.interfaces.browser.IBrowserRequest"
-    provides=".interfaces.ITopicsDigestNotifier"
-    factory=".notifiers.DynamicTopicsDigestNotifier" />
-
 </configure>

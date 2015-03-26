@@ -14,6 +14,7 @@
 ############################################################################
 from __future__ import unicode_literals
 from zope.interface import Interface
+from zope.schema import Bool, Int, Text, TextLine
 from gs.auth.token import AuthToken
 
 
@@ -28,6 +29,32 @@ class ISendAllDigests(Interface):
 
 
 class ITopicsDigestNotifier(Interface):
+
+    canSend = Bool(
+        title='Can send the digest',
+        description='True if the notifier can send the digest.',
+        required=True)
+
+    weight = Int(
+        title='Weight',
+        description='When multiple notifiers can send the digest the '
+                    'weight determines the one that is sent.',
+        required=True)
+
+    subject = TextLine(
+        title='Subject',
+        description='The subject of the email that will contain the digest',
+        required=True)
+
+    text = Text(
+        title='Text',
+        description='The text/plain version of the digest.',
+        required=True)
+
+    html = Text(
+        title='HTML',
+        description='The text/html version of the digest.',
+        required=True)
 
     def notify():
         'Send out the topic digest to the group'

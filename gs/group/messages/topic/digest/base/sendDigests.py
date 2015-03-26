@@ -77,12 +77,14 @@ class SendAllDigests(SiteForm):
         for site in self.sites:
             for group in self.groups_for_site(site):
                 try:
-                    tdn = getMultiAdapter((group, self.request),
-                                          ITopicsDigestNotifier)
+                    tdn = get_digest_adapter(group)
                 except ComponentLookupError:
                     m = 'Ignoring the group with the odd interface: {0} '\
                         'on {1}'
                     log.warn(m.format(site.getId(), group.getId()))
+
+                if not tdn:
+                    continue  # --=mpj17=-- Sorry, Dijkstra
 
                 try:
                     tdn.notify()
@@ -93,6 +95,18 @@ class SendAllDigests(SiteForm):
 
         log.info('All digests sent')
         self.status = '<p>All digests sent.</p>'
+
+    def get_digest_adapter(self, group):
+        '''Get the digest adaptor for a group
+:param object group: The group to get a digest-adaptor for.
+:returns: The "best" digest adaptor for the group, or ``None``.
+:rtype: class:`.interfaces.ITopicsDigestNotifier`'''
+        adapters = [a[1] for a in getAdapters((group, self.request),
+                                              ITopicsDigestNotifier)
+                    if a[1].canSend]
+        adapters.sort(key=lambda a: a[1].weight)
+        retval = adapters[0] if adapters else None
+        return retval
 
     def handle_send_all_digests_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)
