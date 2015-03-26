@@ -31,7 +31,7 @@ Not meant to be directly created. Instead, a subclass must be created.
     def __init__(self, context, siteInfo):
         self.context = context
         self.siteInfo = siteInfo
-        self.__topics = None
+        self.topicsList = None
 
     @Lazy
     def groupInfo(self):
@@ -48,17 +48,17 @@ Not meant to be directly created. Instead, a subclass must be created.
         retval = DigestQuery()
         return retval
 
-    def __formatTopic__(self, topic):
+    def format_topic(self, topic):
         # Adds a few fields, and establishes a common set of topic
         # attributes
 
-        assert hasattr(self, '__last_author_key__')
-        assert hasattr(self, '__subject_key__')
+        assert hasattr(self, 'last_author_key')
+        assert hasattr(self, 'subject_key')
 
         # Add a couple of useful attributes
         topic['last_post_author'] = createObject(
             'groupserver.UserFromId', self.context,
-            topic[self.__last_author_key__])
+            topic[self.last_author_key])
         u = u'{0}/r/topic/{1}'
         topic['topic_url'] = u.format(self.siteInfo.url,
                                       topic['last_post_id'])
@@ -68,10 +68,9 @@ Not meant to be directly created. Instead, a subclass must be created.
         topic['last_post_date_str'] = dt.strftime(date_format_by_age(dt))
 
         # Change names and remove redundent information
-        topic['topic_subject'] = topic[self.__subject_key__]
-        del topic[self.__subject_key__]
-        del topic[self.__last_author_key__]
-
+        topic['topic_subject'] = topic[self.subject_key]
+        del topic[self.subject_key]
+        del topic[self.last_author_key]
         return topic
 
     @property
@@ -153,12 +152,11 @@ Each item is a dict that provides the following attributes about a topic:
 Subclasses of :class:`BaseTopicsDigest` may provide additional
 attributes."""
 
-        assert hasattr(self, '__getTopics__')
+        assert hasattr(self, 'get_topics')
 
-        if self.__topics is None:
-            self.__topics = self.__getTopics__()
-            self.__topics = [self.__formatTopic__(topic)
-                             for topic in self.__topics]
-        retval = self.__topics
+        if self.topicsList is None:
+            self.topicsList = [self.format_topic(topic)
+                               for topic in self.get_topics()]
+        retval = self.topicsList
         assert isinstance(retval, list)
         return retval
