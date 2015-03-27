@@ -24,11 +24,16 @@ UTF8 = 'utf-8'
 
 
 class NoSuchListError(AttributeError):
+    'No such list exists.'
     pass
 
 
 class DigestNotifier(object):
+    '''Send a new digest notification to all the group members that want
+to recieve a digest
 
+:param object group: The group to send the digest to.
+:param object request: The HTTP request object.'''
     def __init__(self, group, request):
         self.context = self.group = group
         self.request = request
@@ -57,14 +62,17 @@ class DigestNotifier(object):
 
 :param str a: The address to check.
 :returns: ``True`` if the address is valid; ``False`` otherwise.
-:rtype: bool'''
+:rtype: bool
+
+An address is considered valid if it contains an ``@`` and the address is
+associated with profile of a user.'''
         retval = ('@' in a) and self.acl_users.get_userIdByEmail(a.lower())
         return retval
 
     @Lazy
     def digestMemberAddresses(self):
         '''The list of email addresses of the group members that are
-subscribed via digest.'''
+configured to receive a digest.'''
         try:
             mListInfo = createObject('groupserver.MailingListInfo',
                                      self.group)
@@ -103,6 +111,8 @@ subscribed via digest.'''
 :param str text: The ``text/plain`` version of the digest message
 :param str html: The ``text/html`` version of the digest message
 :returns: None
+:raises gs.group.messages.topic.digest.base.notifier.NoSuchListError: if no
+    mailing-list could be found to match the group.
 
 Creates the text and HTML bodies of an digest email based on the parameters.
 Then sends the digest email to members of the group who are subscribed to

@@ -28,6 +28,13 @@ utf8 = 'utf-8'
 
 
 class Message(object):
+    '''Create an email message for sending to the digest members
+
+:param object group: The group that the digest is for.
+:param str subject: The subject of the message.
+:param str text: The plain-text version of the digest.
+:param str html: THe HTML version of the digest.'''
+
     # TODO: Create and use a MessageSender made for notifying groups
     def __init__(self, group, subject, text, html):
         self.context = self.group = group
@@ -76,14 +83,40 @@ class Message(object):
 
     @staticmethod
     def h(h):
-        'Turn the text h into a nice header string'
+        '''Turn the text into a nice header string
+
+:param str h: The string to turn into a header
+:returns: The string converted into a UTF-8 encoded header-string
+:rtype: str'''
         retval = str(Header(h, utf8))
         assert retval
         return retval
 
-    def add_headers(self, container, subject):
+    def add_headers(self, container):
+        '''Add the stadard headers to the message
+
+:param container: The email message container to add the headers to.
+:type container: email.mime.multipart.MIMEMultipart
+:returns: The container (message).
+
+The following headers are added
+
+* :mailheader:`Subject`: The subject set during initialisation
+* :mailheader:`From`: the group email address
+* :mailheader:`To`: the group email address
+* :mailheader:`Sender`: the support email address
+* :mailheader:`Precedence`: ``bulk``
+* :mailheader:`Organization`: the site name
+* :mailheader:`User-Agent`: Identifies GroupServer and this module
+* :mailheader:`List-Post`: the group email address
+* :mailheader:`List-Unsubscribe`: The unsubscribe ``mailto`` for the group
+* :mailheader:`List-Archive`: the address for the group page
+* :mailheader:`List-Help`: the address for the help page
+* :mailheader:`List-Owner`: the support email address
+* :mailheader:`List-ID`: The unique identifier for the group
+'''
         # Required headers
-        container['Subject'] = self.h(subject)
+        container['Subject'] = self.h(self.subject)
         container['From'] = self.fromAddress
         container['To'] = self.toAddress
         # Sender?
@@ -130,9 +163,18 @@ class Message(object):
         return container
 
     def as_string(self):
+        '''Represent the email message as a string
+
+:returns: The email message ready for sending.
+:rtype: str
+
+The message is a :mimetype:`multipart/alternative` email, with the
+plain-text and HTML components of the message are encoded as UTF-8 and added
+to the message. The headers are set by
+:meth:`.message.Message.add_headers`.'''
         # Stolen from gs.profile.notify.sender.MessageSender
         container = MIMEMultipart('alternative')
-        container = self.add_headers(container, self.subject)
+        container = self.add_headers(container)
 
         # Construct the body
         text = MIMEText(self.text.encode(utf8), 'plain', utf8)
@@ -145,5 +187,6 @@ class Message(object):
         return retval
 
     def __str__(self):
+        '''See :meth:`.message.Message.as_string`'''
         retval = self.as_string()
         return retval

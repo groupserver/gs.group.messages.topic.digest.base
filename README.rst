@@ -7,7 +7,7 @@ The Daily Digest of Topics
 
 :Author: `Bill Bushey`_; `Michael JasonSmith`_
 :Contact: Bill Bushey <wbushey@gmail.com>
-:Date: 2013-07-10
+:Date: 2015-04-xx
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
   `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
@@ -17,8 +17,8 @@ Introduction
 ============
 
 The ``gs.group.messages.topicsdigest`` product provides the core
-infrastructure for creating and sending topic digests in a group. Two types
-of digests are sent:
+infrastructure for creating and sending topic digests in a
+group. Two types of digests are sent:
  
 #. Daily Digest — A summary of activity in a group from the previous 24
    hours.

@@ -34,7 +34,9 @@ class NoSuchGroupError(ValueError):
     'The specified group does not exist'
 
 
-class SendAllDigests(SiteForm):
+class SendDigest(SiteForm):
+    '''The page that sends a digest to a group'''
+
     label = 'Send a digest to a group'
     pageTemplateFileName = 'browser/templates/send_all_digests.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
