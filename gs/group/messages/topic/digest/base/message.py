@@ -33,7 +33,7 @@ class Message(object):
 :param object group: The group that the digest is for.
 :param str subject: The subject of the message.
 :param str text: The plain-text version of the digest.
-:param str html: THe HTML version of the digest.'''
+:param str html: The HTML version of the digest.'''
 
     # TODO: Create and use a MessageSender made for notifying groups
     def __init__(self, group, subject, text, html):

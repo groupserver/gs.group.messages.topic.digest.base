@@ -47,7 +47,8 @@ class SendDigest(SiteForm):
 
 :param str siteId: The site identifier
 :returns: The site object for the ID.
-:raises NoSuchSiteError: The specified site does not exist'''
+:raises gs.group.messages.topic.digest.base.sendDigests.NoSuchSiteError: The
+    specified site does not exist'''
         site_root = self.context.site_root()
         content = getattr(site_root, 'Content')
         retval = getattr(content, siteId, None)
@@ -63,8 +64,11 @@ class SendDigest(SiteForm):
 :param str siteId: The site identifier
 :param str groupId: The group identifier
 :returns: The group object on the site.
-:raises NoSuchGroupError: The group does not exist.
-:raises NoSuchSiteError: The specified site does not exist'''
+:raises gs.group.messages.topic.digest.base.sendDigests.NoSuchGroupError:
+    The group does not exist.
+
+The :meth:`.sendDigests.SendDigest.get_site` method is called to get the
+site, which is then examined to get the group.'''
         site = self.get_site(siteId)
         groups = getattr(site, 'groups')
         retval = getattr(groups, groupId, None)
@@ -76,9 +80,10 @@ class SendDigest(SiteForm):
 
     def get_digest_adapter(self, group):
         '''Get the digest adaptor for a group
+
 :param object group: The group to get a digest-adaptor for.
 :returns: The "best" digest adaptor for the group, or ``None``.
-:rtype: class:`.interfaces.ITopicsDigestNotifier`'''
+:rtype: :class:`.interfaces.ITopicsDigestNotifier`'''
         adapters = [a[1] for a in getAdapters((group, self.request),
                                               ITopicsDigestNotifier)
                     if a[1].canSend]
@@ -89,6 +94,16 @@ class SendDigest(SiteForm):
     @form.action(label='Send', name='send',
                  failure='handle_send_all_digests_failure')
     def handle_send_all_digests(self, action, data):
+        '''The form action for the *Send digest* page.
+
+:param action: The button that was clicked.
+:param dict data: The form data, containing the keys ``siteId`` and
+    ``groupId``.
+
+The group (:meth:`.sendDigests.SendDigest.get_group`) is adapted to a digest
+(:meth:`.sendDigests.SendDigest.get_digest_adpter`). This digest is then
+sent to the group members using the notifier
+(:class:`.notifier.DigestNotifier`).'''
         m = 'Processing the digests for "{0}" on "{1}"'
         msg = m.format(data['siteId'], data['groupId'])
         log.info(msg)

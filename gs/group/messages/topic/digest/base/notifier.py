@@ -114,10 +114,10 @@ configured to receive a digest.'''
 :raises gs.group.messages.topic.digest.base.notifier.NoSuchListError: if no
     mailing-list could be found to match the group.
 
-Creates the text and HTML bodies of an digest email based on the parameters.
-Then sends the digest email to members of the group who are subscribed to
+Creates a message based on the parameters (:class:`.message.Message`) and
+then sends the digest email to members of the group who are subscribed to
 topics digests, if the information from the database indicates that a
-digest should be sent.
+digest has not be sent today.
 
 A digest log is also checked and modified. If the log shows that a digest
 has been sent to the group in the previous 24 hours, a digest will not be
