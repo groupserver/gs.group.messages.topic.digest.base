@@ -48,16 +48,17 @@ Not meant to be directly created. Instead, a subclass must be created.
         retval = DigestQuery()
         return retval
 
-    def format_topic(self, topic):
-        # Adds a few fields, and establishes a common set of topic
-        # attributes
+    def get_user(self, userId):
+        retval = createObject('groupserver.UserFromId', self.context,
+                              userId)
+        return retval
 
-        assert hasattr(self, 'last_author_key')
-        assert hasattr(self, 'subject_key')
+    def format_topic(self, topic):
+        '''Adds a few fields, and establishes a common set of topic
+attributes'''
 
         # Add a couple of useful attributes
-        topic['last_post_author'] = createObject(
-            'groupserver.UserFromId', self.context,
+        topic['last_post_author'] = self.get_user(
             topic[self.last_author_key])
         u = u'{0}/r/topic/{1}'
         topic['topic_url'] = u.format(self.siteInfo.url,

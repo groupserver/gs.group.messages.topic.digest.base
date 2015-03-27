@@ -1,6 +1,26 @@
 Changelog
 =========
 
+4.0.0 (2015-04-xx)
+------------------
+
+* Splitting the web-hook in two:
+
+  + Adding a page for getting a list of groups with a digest, and
+  + Adding a page for sending a digest for a single group.
+
+* Moving `the daily digest`_ to a new product
+* Moving `the weekly digest`_ to a new product
+* Removing the dynamic digest notifier, and making the digests
+  themselves choose the notification that should go out.
+* Added documentation **[FIXME add link]**
+
+.. _the daily digest:
+   https://github.com/groupserver/gs.group.messages.topic.digest.daily
+
+.. _the weekly digest:
+   https://github.com/groupserver/gs.group.messages.topic.digest.weekly
+
 3.0.0 (2015-03-03)
 ------------------
 
