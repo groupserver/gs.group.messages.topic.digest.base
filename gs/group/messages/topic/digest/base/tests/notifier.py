@@ -13,7 +13,7 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals
-#from mock import (MagicMock, patch)
+from mock import (patch)
 from unittest import TestCase
 from gs.group.messages.topic.digest.base.notifier import (DigestNotifier)
 
@@ -25,3 +25,21 @@ class DigestNotifierTest(TestCase):
         n = DigestNotifier(None, None)
         r = n.check_address('This is not an address')
         self.assertFalse(r)
+
+    @patch.object(DigestNotifier, 'acl_users')
+    def test_check_address_anon(self, m_acl_users):
+        'No user, no digest'
+        m_acl_users.get_userIdByEmail.return_value = ''
+        n = DigestNotifier(None, None)
+        r = n.check_address('person@people.example.com')
+        self.assertEqual(1, m_acl_users.get_userIdByEmail.call_count)
+        self.assertFalse(r)
+
+    @patch.object(DigestNotifier, 'acl_users')
+    def test_check_address_user(self, m_acl_users):
+        'No user, no digest'
+        m_acl_users.get_userIdByEmail.return_value = 'person'
+        n = DigestNotifier(None, None)
+        r = n.check_address('person@people.example.com')
+        self.assertEqual(1, m_acl_users.get_userIdByEmail.call_count)
+        self.assertTrue(r)
