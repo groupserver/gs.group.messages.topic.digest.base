@@ -15,10 +15,10 @@
 from __future__ import absolute_import, unicode_literals
 from logging import getLogger
 log = getLogger('gs.group.messages.topicsdigest.notifiermessages')
-from gs.group.base import GroupPage
+from gs.content.email.base import GroupEmail
 
 
-class TopicsDigestMessage(GroupPage):
+class TopicsDigestMessage(GroupEmail):
     def __init__(self, context, request):
         super(TopicsDigestMessage, self).__init__(context, request)
 
