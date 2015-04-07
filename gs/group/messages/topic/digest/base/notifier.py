@@ -25,7 +25,7 @@ UTF8 = 'utf-8'
 
 class NoSuchListError(AttributeError):
     'No such list exists.'
-    pass
+    # TODO: Move the error class and this code to the mailing list
 
 
 class DigestNotifier(object):
@@ -79,7 +79,6 @@ configured to receive a digest.'''
         except AttributeError:
             # Turn the generic AttributeError to the more specific
             # NoSuchListError.
-            # TODO: Move the error class and this code to the mailing list
             m = 'No such list "{0}" on {1}'
             msg = m.format(self.groupInfo.id, self.siteInfo.id)
             raise NoSuchListError(msg)
