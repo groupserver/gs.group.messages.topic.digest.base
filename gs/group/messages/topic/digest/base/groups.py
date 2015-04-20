@@ -37,7 +37,7 @@ class GetGroups(SiteEndpoint):
 :param action: The button that was clicked.
 :param dict data: The form data.'''
         log.info('Getting the digest groups')
-        retval = self.groups
+        retval = self.get_groups()
         return to_json(retval)
 
     def handle_get_all_digests_failure(self, action, data, errors):
@@ -45,8 +45,10 @@ class GetGroups(SiteEndpoint):
         retval = self.build_error_response(action, data, errors)
         return retval
 
-    @Lazy
-    def groups(self):
+    # --=mpj17=-- Everything below here could be in a seperate Groups class
+    # FWIW
+
+    def get_groups(self):
         groups = set()
         for siteId, groupId in self.queries.get_digest_groups():
             if not(siteId):
