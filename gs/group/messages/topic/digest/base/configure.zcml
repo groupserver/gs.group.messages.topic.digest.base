@@ -14,7 +14,14 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="gs.group.messages.topic.digest.base">
 
-  <!-- Send All Digests Form -->
+  <!-- Get groups form -->
+  <browser:page
+    name="gs-group-messages-topic-digest-groups.html"
+    for="Products.GSContent.interfaces.IGSSiteFolder"
+    class=".groups.GetGroups"
+    permission="zope2.Public"/>
+
+  <!-- Send Digest Form -->
   <browser:page
     name="gs-group-messages-topic-digest-send.html"
     for="Products.GSContent.interfaces.IGSSiteFolder"

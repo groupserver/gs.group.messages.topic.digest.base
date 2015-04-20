@@ -18,6 +18,14 @@ from zope.schema import ASCIILine, Bool, Int, Text, TextLine
 from gs.auth.token import AuthToken
 
 
+class IGetDigestGroups(Interface):
+    'Get the digest groups'
+    token = AuthToken(
+        title='Token',
+        description='The authentication token',
+        required=True)
+
+
 class ISendDigest(Interface):
     '''Declares the form that will be used to send digest to a group on the
 site.'''

@@ -21,7 +21,6 @@ from gs.group.messages.topic.list.queries import TopicsQuery
 
 class SendQuery(object):
     def __init__(self):
-
         self.digestTable = getTable('group_digest')
         self.now = datetime.datetime.now()
 
@@ -167,4 +166,21 @@ class DigestQuery(TopicsQuery):
                   'num_posts': x['num_posts'],
                   'num_posts_day': x['num_posts_day'],
                   } for x in r]
+        return retval
+
+
+class DigestGroupsQuery(object):
+    def __init__(self):
+        self.emailSettingTable = getTable('email_setting')
+
+    def get_digest_groups(self):
+        est = self.emailSettingTable
+        s = sa.select([est.c.site_id, est.c.group_id])
+        s.distinct()
+        s.order_by(est.c.site_id.desc())
+
+        retval = []
+        r = s.execute()
+        if r:
+            retval = [(x['site_id'], x['group_id']) for x in r]
         return retval
