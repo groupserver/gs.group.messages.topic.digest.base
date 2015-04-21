@@ -176,11 +176,11 @@ class DigestGroupsQuery(object):
     def get_digest_groups(self):
         est = self.emailSettingTable
         s = sa.select([est.c.site_id, est.c.group_id])
-        s.distinct()
-        s.order_by(est.c.site_id.desc())
+        s.distinct(est.c.group_id)
 
         retval = []
-        r = s.execute()
+        session = getSession()
+        r = session.execute(s)
         if r:
             retval = [(x['site_id'], x['group_id']) for x in r]
         return retval
