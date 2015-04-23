@@ -13,7 +13,7 @@ Changelog
 * Moving `the weekly digest`_ to a new product
 * Removing the dynamic digest notifier, and making the digests
   themselves choose the notification that should go out.
-* Added documentation **[FIXME add link]**
+* Added Sphinx documentation
 
 .. _the daily digest:
    https://github.com/groupserver/gs.group.messages.topic.digest.daily
