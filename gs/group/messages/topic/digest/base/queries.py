@@ -168,6 +168,21 @@ class DigestQuery(TopicsQuery):
                   } for x in r]
         return retval
 
+    def recent_authors(self, days=1):
+        'Get the author-ids of all those that have posted recently'
+        pt = self.postTable
+        yesterday = datetime.datetime.now() - datetime.timedelta(days=days)
+        s = sa.select([pt.c.user_id, pt.c.date])
+        s.append_whereclause(pt.c.date >= yesterday)
+        s.order_by(sa.desc(pt.c.date))
+        s.distinct()
+
+        session = getSession()
+        r = session.execute(s)
+
+        retval = [x['user_id'] for x in r]
+        return retval
+
 
 class DigestGroupsQuery(object):
     def __init__(self):
