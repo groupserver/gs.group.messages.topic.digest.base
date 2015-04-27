@@ -1,9 +1,9 @@
-==================================
-``gs.group.messages.topicsdigest``
-==================================
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-The Daily Digest of Topics
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+=======================================
+``gs.group.messages.topic.digest.base``
+=======================================
+~~~~~~~~~~~~~~~~~~~~
+The digest of topics
+~~~~~~~~~~~~~~~~~~~~
 
 :Author: `Bill Bushey`_; `Michael JasonSmith`_
 :Contact: Bill Bushey <wbushey@gmail.com>
