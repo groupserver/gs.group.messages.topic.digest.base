@@ -1,7 +1,14 @@
 Changelog
 =========
 
-4.0.0 (2015-04-xx)
+4.0.1 (2015-05-04)
+------------------
+
+* Raising the correct error when a site is missing
+* Added unit tests for the ``SendDigest.get_site`` and
+  ``SendDigest.get_group`` methods
+
+4.0.0 (2015-04-27)
 ------------------
 
 * Splitting the web-hook in two:
