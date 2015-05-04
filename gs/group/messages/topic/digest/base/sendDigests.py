@@ -64,8 +64,8 @@ class SendDigest(SiteForm):
         site_root = self.context.site_root()
         content = getattr(site_root, 'Content')
         retval = getattr(content, siteId, None)
-        if not(retval and retval.getProperty('is_division', False)
-               and hasattr(retval, 'groups')):
+        if ((retval is None) or not retval.getProperty('is_division', False)
+                or not hasattr(retval, 'groups')):
             m = 'No site with the ID "{0}"'.format(siteId)
             raise NoSuchSiteError(siteId, m)
         return retval
@@ -84,7 +84,7 @@ site, which is then examined to get the group.'''
         site = self.get_site(siteId)
         groups = getattr(site, 'groups')
         retval = getattr(groups, groupId, None)
-        if not(retval and retval.getProperty('is_group', False)):
+        if ((retval is None) or not retval.getProperty('is_group', False)):
             m = 'No group with the ID "{0}" on the site "{1}"'
             msg = m.format(groupId, siteId)
             raise NoSuchGroupError(groupId, msg)
