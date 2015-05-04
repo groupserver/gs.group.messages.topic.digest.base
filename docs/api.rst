@@ -28,6 +28,9 @@ Sender
       digest is then sent to the group members using the notifier
       (:class:`.notifier.DigestNotifier`).
 
+.. autoclass:: gs.group.messages.topic.digest.base.sendDigests.NoSuchObjectError
+   :members:
+
 .. autoclass:: gs.group.messages.topic.digest.base.sendDigests.NoSuchSiteError
    :members:
 
