@@ -26,11 +26,23 @@ from .notifier import (DigestNotifier, NoSuchListError)
 FOLDER_TYPES = ['Folder', 'Folder (Ordered)']
 
 
-class NoSuchSiteError(ValueError):
+class NoSuchObjectError(ValueError):
+    '''Base class for the :class:`NoSuchSiteError` and
+:class:`NoSuchGroupError`
+
+:param str val: The identifier for the object that could not be found.
+:param str msg: The error message.'''
+
+    def __init__(self, val, msg):
+        super(NoSuchObjectError, self).__init__(msg)
+        self.value = val
+
+
+class NoSuchSiteError(NoSuchObjectError):
     'The specified site does not exsit'
 
 
-class NoSuchGroupError(ValueError):
+class NoSuchGroupError(NoSuchObjectError):
     'The specified group does not exist'
 
 
@@ -55,7 +67,7 @@ class SendDigest(SiteForm):
         if not(retval and retval.getProperty('is_division', False)
                and hasattr(retval, 'groups')):
             m = 'No site with the ID "{0}"'.format(siteId)
-            raise ValueError(m)
+            raise NoSuchSiteError(siteId, m)
         return retval
 
     def get_group(self, siteId, groupId):
@@ -75,7 +87,7 @@ site, which is then examined to get the group.'''
         if not(retval and retval.getProperty('is_group', False)):
             m = 'No group with the ID "{0}" on the site "{1}"'
             msg = m.format(groupId, siteId)
-            raise NoSuchGroupError(msg)
+            raise NoSuchGroupError(groupId, msg)
         return retval
 
     def get_digest_adapter(self, group):
