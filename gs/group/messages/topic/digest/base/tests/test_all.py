@@ -16,7 +16,9 @@ from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
 from gs.group.messages.topic.digest.base.tests.notifier import (
     DigestNotifierTest)
-testCases = (DigestNotifierTest, )
+from gs.group.messages.topic.digest.base.tests.sendDigests import (
+    SendDigestTest)
+testCases = (DigestNotifierTest, SendDigestTest)
 
 
 def load_tests(loader, tests, pattern):
