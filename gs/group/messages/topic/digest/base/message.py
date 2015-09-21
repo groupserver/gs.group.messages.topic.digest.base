@@ -12,6 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ############################################################################
+from __future__ import absolute_import, print_function, unicode_literals
 from email.Header import Header
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
@@ -137,7 +138,7 @@ The following headers are added
             p = '<mailto:{0}>'.format(self.rawFromAddress)
             container['List-Post'] = self.h(p)
 
-            u = '<mailto:{0}?Subject=Unsubscribe>'.format(
+            u = '<mailto:{0}?subject=Unsubscribe>'.format(
                 self.rawFromAddress)
             container['List-Unsubscribe'] = self.h(u)
 
